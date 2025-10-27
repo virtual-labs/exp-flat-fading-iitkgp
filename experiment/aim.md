@@ -1,14 +1,4 @@
 ## Aim of experiment
 
-To understand the pathloss prediction formula.
+To study the outage probability, LCR & ADF in SISO for Selection Combining and MRC.
 
-### Objective:
-
-
-1. Calculation of received signal strength as a function of distance of separation, antenna height and carrier frequency.
-2. To understand the impact of :-
-- Transmitter Power,
-- Pathloss exponent,
-- Carrier frequency,
-- Receiver antenna height,
-- Transmitter antenna height.
