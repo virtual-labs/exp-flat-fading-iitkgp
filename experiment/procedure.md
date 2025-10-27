@@ -55,5 +55,5 @@ Follow the instructions given below to perform the experiments:-
       </div>
 
 * Step9:- To Redo the experiment click on "RESET" button.
-* 
+
  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>   
