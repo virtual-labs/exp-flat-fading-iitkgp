@@ -1,727 +1,771 @@
 <!DOCTYPE html>
-<html lang="en"><!--html tag start-->
+<html lang="en">
 <head>
-  <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    
-    <title>PMOS Capacitor Band Diagram</title>
-    
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css">
-    
-    <!-- Font Awesome and jQuery UI CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-ui/1.12.1/themes/base/jquery-ui.css">   
-    <link rel="stylesheet" href="adik.css"> 
-    
-    <!-- jQuery -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-    
-    <!-- Bootstrap Bundle JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- MathJax for mathematical typesetting -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_HTML"></script>
-    
-    <!-- Additional Libraries -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/11.2.1/math.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jQuery-Knob/1.2.13/jquery.knob.min.js"></script>
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-   
-    <script src="./js/jquery.flot.min.js"></script>
-
-
-
-
+    <title>Flat Fading Simulation</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js for plotting graphs -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- jsPDF and html2canvas for PDF report generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
     <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f4f4f9;
-        color: #333;
-        margin: 0;
-        padding: 20px;
-      }
-      .form-container {
-        max-width: 1100px;
-        margin: 0 auto;
-        background: #fff;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      }
-      
-      td {
-        padding: 10px;
-        text-align: right;
-      }
-      td:nth-child(2n) {
-        text-align: left;
-        padding-left: 5px;
-      }
-      input[type="text"] {
-        width: 100px;
-        padding: 5px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-      }
-      input[type="button"] {
-        padding: 8px 12px;
-        margin: 5px;
-        border: none;
-        border-radius: 4px;
-        background-color: #007bff;
-        color: white;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-      }
-      input[type="button"]:hover {
-        background-color: #0056b3;
-      }
-      .button-group {
-        text-align: center;
-        margin-top: 20px;
-      }
-      .button-group input[type="button"] {
-        margin: 5px;
-      }
-      .material-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin-top: 20px;
-      }
-      .material-buttons input[type="button"] {
-        background-color: #28a745;
-      }
-      .material-buttons input[type="button"]:hover {
-        background-color: #218838;
-      }
-      .voltage-control {
-        text-align: center;
-        margin-top: 20px;
-      }
-      .voltage-control input[type="button"] {
-        background-color: #dc3545;
-      }
-      .voltage-control input[type="button"]:hover {
-        background-color: #c82333;
-      }
-
-
-      .table-container {
-      max-width: 800px;
-      margin: 0 auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-    
-    td {
-      padding: 10px;
-      text-align: left;
-    }
-    td p {
-      margin: 0;
-      display: flex;
-      align-items: center;
-    }
-    td span {
-      margin-left: 5px;
-    }
-    .math {
-      font-family: "Times New Roman", serif;
-      font-style: italic;
-    }
-    .flex-container {
-      display: flex;
-      align-items: center;
-    }
-    .center-text {
-      text-align: center;
-      font-weight: bold;
-      margin: 20px 0;
-    }
-    .value {
-      font-weight: bold;
-      color: #007bff;
-    }
+        /* Custom styles for the application */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .tab-button.active {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        input:disabled {
+            background-color: #f3f4f6;
+            cursor: not-allowed;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
     </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
 
-  </head>
-<body><!--body tag start-->
-    
-    
-   
-	
-    <div class="container p-3 my-5 text-left border"><!--3rd Container under body tag start-->
-      <div class="row"><!--First row under 3rd container start-->
-        <div class="col-md-1"></div><!--First col under 3rd container start& end-->
-        <div class="col-md-10"><!--2nd col under 3rd container start-->
-            <p class="text-center bg-success"> <a class="nav-link" data-bs-toggle="tab"  id="instcontrol" style="background-color:#128BD9"  ><span class=" h3 text-dark"> Instructions </span></a>
-              <div id="inst" style="display:block;height:200px;overflow-y:auto;text-align:justify">
-					
-					<!-- INSRTUCTION START -->
-          <ol>
-    
-            <h4>Input Parameters</h4>
-            <ul>
-              <li><strong>ϕm, ϕs (Work Function of the Metal and Semiconductor):</strong> Enter the values in electron volts (eV).</li>
-              <li><strong>χ (Electron Affinity):</strong> Enter the electron affinity in eV.</li>
-              <li><strong>tox, tox2 (Oxide Thickness):</strong> Enter the oxide thickness in nanometers (nm).</li>
-              <li><strong>εox, εox2 (Dielectric Constants of the Oxides):</strong> Enter the dielectric constants.</li>
-              <li><strong>Eg (Bandgap Energy):</strong> Enter the bandgap energy using the provided formula if needed.</li>
-              <li><strong>Nd (Donor Concentration)</strong> and <strong>Na (Acceptor Concentration):</strong> Enter the concentration values in cm³.</li>
-              <li><strong>T (Temperature):</strong> Enter the operating temperature in Kelvin (K).</li>
-              <li><strong>εsemi (Semiconductor Dielectric Constant):</strong> Enter the value.</li>
-              <li><strong>V (Voltage):</strong> Input the voltage applied across the device.</li>
-              <li><strong>Material Selection (Si, Ge, GaAs):</strong> Choose the material of the semiconductor.</li>
-            </ul>
-  
-            <h4>Submit</h4>
-            <p>Once all parameters are entered, click the <strong>Submit</strong> button to run the simulation.</p>
-  
-            <h4>View Results</h4>
-            <ul>
-              <li><strong>Band Diagram:</strong> Observe the energy levels within the semiconductor, including the conduction band edge, valence band edge, and Fermi level.</li>
-              
-            </ul>
-  
-            <h4>Explore Different Regions</h4>
-            <p>Use the <strong>Accumulation</strong>, <strong>Flatband</strong>, <strong>Depletion</strong>, <strong>Threshold</strong>, and <strong>Inversion</strong> buttons to explore different operational regions of the PMOS transistor.</p>
-  
-            <h4>Additional Notes</h4>
-            <ul>
-              <li>The right side of the screen displays calculated parameters such as the built-in potential (ϕs), maximum depletion width (xP), surface potential (ψs), and threshold voltage (VT).</li>
-              <li>The calculated charge (Q) and electric field (Eox) in the oxide layer are also shown.</li>
-              <li>Make sure to adjust and explore the parameters to see how they affect the band diagram, charge density, and electric field.</li>
-            </ul>
-     
-    </ol>
-				<!-- INSTRUCTION STOP -->	
-					
-		   </div>
-            </p> 
-          </div><!--2nd col under 3rd container end-->
-		  
-        <div class="col-md-1"></div><!--3rd col under 3rd container start& end-->
-      </div><!--First row under 3rd container end-->
-    </div><!--3rd Container under body tag end-->
-	
-   <!--simulation start -->
-   <div>
-    <body style="background-color:white" onload="moscap();"><div id="MathJax_Message" style="display: none;"></div>
-
-
-<style>
-h3 {margin-left:1cm}
-</style>
-
-<script type="text/x-mathjax-config;executed=true">
-  MathJax.Hub.Config({
-    extensions: ["tex2jax.js"],
-    jax: ["input/TeX","output/HTML-CSS"],
-    tex2jax: {inlineMath: [["$","$"],["\\(","\\)"]]}
-  });
-</script>
-
-
-<script language="JavaScript">
-
-var Ev = [];  //valence band energy
-// d arrays used for plotting
-var d1 = [];  //Ev
-var d2 = [];  //EF
-var d3 = [];  //Ec
-var d4 = [];  //n
-var d5 = [];  //p
-var d6 = [];  //rho
-var d7 = [];  //Electric field
-
-echarge = 1.60217733E-19;
-kb = 1.380658E-23/echarge;  //eV/K
-
-function moscap() { 
- tox = eval(data.tox.value)*1E-9;
- na = 1E6*eval(data.na.value);
- Va = eval(data.V.value); //applied voltage
- if (Math.abs(Va)<1E-10) {V = 0; data.V.value=0;}
- Nv = 1E6*eval(data.Nv.value);
- Nc = 1E6*eval(data.Nc.value);
- T = eval(data.T.value);
- Eg = eval(data.Eg.value);
- phi_m = eval(data.phi_m.value);
- chi_s = eval(data.chi_s.value);
- document.getElementById('Eg_txt').innerHTML=Eg.toPrecision(3);
- eps = 8.854187817E-12*eval(data.eps.value);
- eps_ox = 8.854187817E-12*eval(data.eps_ox.value);
- ni=Math.sqrt(Nc*Nv*Math.pow(T/300,3))*Math.exp(1.6022E-19*(-Eg)/(2*1.380658E-23*T));
- document.getElementById('ni_txt').innerHTML=(ni/1E6).toPrecision(3);
- Ev0 = kb*T*Math.log(na/Nv); //Ev - EF  far from the oxide
- Ec0 = kb*T*Math.log(ni*ni/(Nc*na)); //EF - Ec far from the oxide
- phi_s = chi_s + Eg + Ev0; // work function of semiconductor 
- document.getElementById('phi_s_txt').innerHTML=(phi_s).toPrecision(3);
- Vfb = phi_m  - phi_s; // flat band voltage
- document.getElementById('Vfb_txt').innerHTML=(Vfb).toPrecision(3);
- VT = 2*tox*Math.sqrt(eps*na*1.380658E-23*T*Math.log(na/ni))/eps_ox+2*kb*T*Math.log(na/ni);  //threshold voltage in depletion approximation
- document.getElementById('VT_txt').innerHTML=(VT+Vfb).toPrecision(3);
- xp = 2*Math.sqrt(eps*kb*T*Math.log(na/ni)/(echarge*na)); // maximum depletion width in depletion approximation
- document.getElementById('xp_txt').innerHTML=(1E6*xp).toPrecision(3);
- cox= eps_ox/tox;
- V = Va - phi_m + phi_s; //zero bias should result in a built-in voltage corresponding to the work function difference
- Es0 = -tox*echarge*na/eps_ox + echarge*na*Math.sqrt(tox*tox/(eps_ox*eps_ox) + 2*(Va - Vfb)/(echarge*na*eps)); //Es from the depletion approximation
- document.getElementById('Es0_txt').innerHTML=Es0.toPrecision(3);
- VIB0 = eps*Es0*Es0/(2*echarge*na);  //V_IB from the depletion approximation
- document.getElementById('VIB0_txt').innerHTML=VIB0.toPrecision(3);
-
-
-/* This section starts with somewhat arbitray initial conditions for Ev(x) and its derivative
-   dEv(x)/dx inside the bulk of the semiconductor and then integrates the Possion equation
-   to the left to calculate the voltage at the semiconductor/oxide interface and then the 
-   voltage at the gate. The calculated voltage at the gate is compared to the desired voltage at the gate 
-   the initial conditions are adjusted to get the calculated value closer to the desired value.
-*/
-  xr = 3.6*xp;   //right position for binary search
-  xm = 1.8*xp; //middle position for binary search
-  xl = 0;      //left position for binary search
-  for (j=0; j<16; j++) {
-    Ev = Ev0;
-    dEvdx = 0;
-    if (V>0) {dEvdx = 1e3; } 
-    if (V<0) {dEvdx = -1e3; } 
-    dx = xm/300;
-    for (i=0; i<301; i++) { //numerical integration using the midpoint method
-      x = xm*(1-i/300);
-      Ev_mid = Ev - dEvdx*dx/2;  //Ev at the midpoint
-      rho_mid = -na - Nc*Math.exp(-(Eg+Ev_mid)/(kb*T)) + Nv*Math.exp(Ev_mid/(kb*T));
-      dEvdx_mid = dEvdx - echarge*rho_mid*0.5*dx/eps;
-      Ev = Ev - dEvdx_mid*dx;
-      dEvdx = dEvdx - echarge*rho_mid*dx/eps;
-    }
-    Vs = Ev0 - Ev;
-    Es = dEvdx;
-    Eox = Es*eps/eps_ox;
-    Vtmp = Vs + Eox*tox;
-
-//binary search
-    if (V<0) {  
-      if (Vtmp > V) {xl = xm; xm = (xr + xl)/2; }
-      if (Vtmp < V) {xr = xm; xm = (xr + xl)/2; } 
-    }
-    else {
-      if (Vtmp < V) {xl = xm; xm = (xr + xl)/2; }
-      if (Vtmp > V) {xr = xm; xm = (xr + xl)/2; } 
-    }
-
-  } // end j
-
-/* This section solves the Possion equation one more time using the optimized initial conditions
-   and saves the data in arrays so it can be plotted.
-*/
-    Ev = Ev0;
-    dEvdx = 0;
-    if (V>0) {dEvdx = 1e3; } 
-    if (V<0) {dEvdx = -1e3; } 
-    dx = xm/300;
-    for (i=0; i<301; i++) { //numerical integration using the midpoint method
-      x = xm*(1-i/300);
-      Ev_mid = Ev - dEvdx*dx/2;  //Ev at the midpoint
-      rho_mid = -na - Nc*Math.exp(-(Eg+Ev_mid)/(kb*T)) + Nv*Math.exp(Ev_mid/(kb*T));
-      dEvdx_mid = dEvdx - echarge*rho_mid*0.5*dx/eps;
-      Ev = Ev - dEvdx_mid*dx;
-      dEvdx = dEvdx - echarge*rho_mid*dx/eps;
-
-      d1[i] = [1E6*x,Ev];
-      d3[i] = [1E6*x,Ev+Eg];
-      n = Nc*Math.exp(-(Eg+Ev)/(kb*T))/1E21;
-      p = Nv*Math.exp(Ev/(kb*T))/1E21
-      d4[i] = [1E6*x,n];
-      d5[i] = [1E6*x,p];
-      d6[i] = [1E6*x,p-n-na/1E21];
-      d7[i] = [1E6*x,dEvdx*1E-6];
-    }
-    d4[301] = [0,0]; d4[302] = [-1E6*(0.25*xp+tox),0];
-    d5[301] = [0,0]; d5[302] = [-1E6*(0.25*xp+tox),0];
-    d6[301] = [0,0]; d6[302] = [-1E6*tox,0]; d6[303] = [-1E6*tox,-d6[300][1]];  d6[304] = [-1E6*(tox-xm/100),-0.92*d6[300][1]]; 
-    d6[305] = [-1E6*(tox+xm/100),-0.92*d6[300][1]]; d6[306] = [-1E6*tox,-d6[300][1]]; d6[307] = [-1E6*tox,0]; d6[308] = [-1E6*(0.25*xp+tox),0];
-    d2[0] = [1E6*xm,0];
-    d2[1] = [0,0];
-    VIB = Ev0 - Ev;
-    Es = dEvdx;
-    Eox = Es*eps/eps_ox;
-    Q = -Es*eps; //the charge on the semiconductor
-    d7[301] = [0,Eox*1E-6]; d7[302]=[-tox*1E6,Eox*1E-6];  d7[303] = [-tox*1E6,0]; d7[304] = [-1E6*(0.25*xp+tox),0];
-    Vtmp = VIB + Eox*tox;
-    d2[3] = null;
-    d2[4] = [-1E6*tox,-Va];
-    d2[5] = [-1E6*(0.25*xp+tox),-Va];
-    d3[301] = [0,d3[300][1]+1];
-    d3[302] = [-1E6*tox,d3[300][1]+1- Eox*tox];
-    d3[303] = [-1E6*tox,-Vtmp];
-    d1[301] = [0,d1[300][1]-1];
-    d1[302] = [-1E6*tox,d1[300][1]-1- Eox*tox];
-    d1[303] = [-1E6*tox,-Vtmp];
-    if (V==0) { //
-      d1[0] = [1E6*xp,Ev0]; d2[0] = [1E6*xp,0]; d3[0] = [1E6*xp,Ev0+Eg];
-      d4[0] = [1E6*xp,0]; d5[0] = [1E6*xp,na/1E21]; d6[0] = [1E6*xp,0]; 
-      d7.length = 0;
-      d7[0] = [1E6*xp,0]; d7[1] = [-1E6*(0.25*xp+tox),0];
-    }
-
-  document.getElementById('Vs_txt').innerHTML=(VIB).toPrecision(3);
-  document.getElementById('Vtmp_txt').innerHTML=(Vtmp + phi_m - phi_s).toPrecision(3);
-  document.getElementById('Q_txt').innerHTML=(Q).toPrecision(3);
-  document.getElementById('n0_txt').innerHTML=(d4[300][1]).toPrecision(3);
-  document.getElementById('Eox_txt').innerHTML=(Eox).toPrecision(3); 
-  document.getElementById('Es_txt').innerHTML=(Es).toPrecision(3); 
-
-//plot bands
-     // Define data for the plot
-     var data1 = [ 
-    { data: d3, color: "rgb(255,0,0)", shadowSize: 0, lines: { show: true, lineWidth: 2 }, points: { show: true, radius: 3, fill: true, fillColor: "rgb(255,0,0)" }, label: "E<sub>c</sub>" },
-    { data: d1, color: "rgb(0,255,255)", shadowSize: 0, lines: { show: true, lineWidth: 2 }, points: { show: true, radius: 3, fill: true, fillColor: "rgb(0,255,255)" }, label: "E<sub>v</sub>" },
-    { data: d2, color: "rgb(255,165,0)", shadowSize: 0, lines: { show: true, lineWidth: 2 }, points: { show: true, radius: 3, fill: true, fillColor: "rgb(255,165,0)" }, label: "E<sub>F</sub>" }
-];
-
-// Plot the graph
-var plot = $.plot($("#placeholder1"), data1, {
-    grid: { hoverable: true, clickable: true },
-    xaxis: { axisLabel: "Voltage (V)" },
-    yaxis: { axisLabel: "Energy Levels" }
-});
-
-$("#placeholder1").bind("plothover", function (event, pos, item) {
-    if (item) {
-        $("#tooltip").html(item.series.label + "<br>V: " + item.datapoint[0].toFixed(2) + " V<br>E: " + item.datapoint[1].toFixed(2))
-            .css({ top: item.pageY + 5, left: item.pageX + 5 })
-            .fadeIn(200);
-    } else {
-        $("#tooltip").hide();
-    }
-});
-
-$(document).ready(function () {
-    $("body").append("<div id='tooltip' style='position: absolute; display: none; border: 1px solid #ccc; background: #fff; padding: 5px; font-size: 12px;'></div>");
-});
-
-
-
-
-
-
-MathJax.Hub.Queue(['Typeset',MathJax.Hub]);  //have Mathjax process the plot legends that were redrawn
-}
-
-</script>
-
-
-<style>
-p {margin-left:1cm; margin-right:1cm;}
-p.t {margin-left:0cm; margin-right:0cm;}
-h2 {margin-left:1cm;}
-</style>
-
-  
-  
-
-
-<div class="form-container">
-  <form name="data">
-    <table>
-      <tr>
-        <td><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>ϕ</mi><mi>m</mi></msub></math> =</td>
-        <td><input type="text" name="phi_m" size="10" value="4.08" spellcheck="false"></td>
-        <td>eV</td>
-        <td><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>χ</mi><mi>s</mi></msub></math> =</td>
-        <td><input type="text" name="chi_s" size="10" value="4.05" spellcheck="false"></td>
-        <td>eV</td>
-      </tr>
-      <tr>
-        <td><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>t</mi><mrow><mi>o</mi><mi>x</mi></mrow></msub></math> =</td>
-        <td><input type="text" name="tox" size="10" value="3" spellcheck="false"></td>
-        <td>nm</td>
-        <td><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>ϵ</mi><mrow><mi>o</mi><mi>x</mi></mrow></msub></math> =</td>
-        <td><input type="text" name="eps_ox" size="10" value="4" spellcheck="false"></td>
-        <td></td>
-        <td><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>N</mi><mi>c</mi></msub><mo>(</mo><mn>300</mn><mo>)</mo></math> =</td>
-        <td><input type="text" name="Nc" size="10" value="2.78E19" spellcheck="false"></td>
-        <td>1/cm³</td>
-        <td><math xmlns="http://www.w3.org/1998/Math/MathML"><mi>T</mi></math> =</td>
-        <td><input type="text" name="T" size="10" value="300" spellcheck="false"></td>
-        <td>K</td>
-      </tr>
-      <tr>
-        <td><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>E</mi><mi>g</mi></msub></math> =</td>
-        <td><input type="text" name="Eg" size="25" value="1.166-4.73E-4*T*T/(T+636)" spellcheck="false"></td>
-        <td>eV</td>
-        <td><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>ϵ</mi><mrow><mi>s</mi><mi>e</mi><mi>m</mi><mi>i</mi></mrow></msub></math> =</td>
-        <td><input type="text" name="eps" size="10" value="12" spellcheck="false"></td>
-        <td></td>
-        <td><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>N</mi><mi>v</mi></msub><mo>(</mo><mn>300</mn><mo>)</mo></math> =</td>
-        <td><input type="text" name="Nv" size="10" value="9.84E18" spellcheck="false"></td>
-        <td>1/cm³</td>
-        <td><math xmlns="http://www.w3.org/1998/Math/MathML"><msub><mi>N</mi><mi>A</mi></msub></math> =</td>
-        <td><input type="text" name="na" size="10" value="1E17" spellcheck="false"></td>
-        <td>1/cm³</td>
-      </tr>
-    </table>
-
-    <div class="button-group">
-      <div class="voltage-control">
-        <math xmlns="http://www.w3.org/1998/Math/MathML"><mi>V</mi></math> = 
-        <input type="text" name="V" size="10" value="0" spellcheck="false"> V 
-        <input type="button" value="-" onclick="data.V.value = (parseFloat(data.V.value) - 0.01).toFixed(2); moscap();">
-        <input type="button" value="+" onclick="data.V.value = (parseFloat(data.V.value) + 0.01).toFixed(2); moscap();">
-      </div>
-      <input type="button" value="Submit" onclick="moscap();">
+    <!-- Name Input Modal -->
+    <div id="nameModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-8 text-center">
+            <h2 class="text-2xl font-bold mb-2">Welcome!</h2>
+            <p class="text-gray-600 mb-6">What is your name?</p>
+            <input type="text" id="userNameInput" placeholder="Enter your name" class="w-full p-3 border rounded-md mb-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <button id="startButton" class="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition text-lg font-semibold">Start Simulation</button>
+        </div>
     </div>
 
-    <div class="material-buttons">
-      <input type="button" value=" Si " onclick="setMaterial('Si');">
-      <input type="button" value=" Ge " onclick="setMaterial('Ge');">
-      <input type="button" value="GaAs" onclick="setMaterial('GaAs');">
-    </div>
+    <div id="simulationContainer" class="container mx-auto p-4 hidden">
+        <header class="text-center py-4 bg-white rounded-lg shadow-md mb-6">
+            
+            <p class="text-md text-gray-500 mt-1" id="welcomeMessage"></p>
+        </header>
 
-    <div class="button-group">
-      <input type="button" value="Accumulation" onclick="setVoltage(Vfb - 0.2);">
-      <input type="button" value="Flatband" onclick="setVoltage(Vfb);">
-      <input type="button" value="Depletion" onclick="setVoltage(0.5 * (VT + 2 * Vfb));">
-      <input type="button" value="Threshold" onclick="setVoltage(VT + Vfb);">
-      <input type="button" value="Inversion" onclick="setVoltage(VT + Vfb + 0.2);">
-    </div>
-  </form>
-</div>
-
-<script>
-  function setMaterial(material) {
-    const materials = {
-      Si: {
-        Nc: '2.78E19',
-        Nv: '9.84E18',
-        chi_s: '4.05',
-        Eg: '1.166 - (4.73E-4 * T * T) / (T + 636)'
-      },
-      Ge: {
-        Nc: '1.04E19',
-        Nv: '6.0E18',
-        chi_s: '4.0',
-        Eg: '0.7437 - (4.77E-4 * T * T) / (T + 235)'
-      },
-      GaAs: {
-        Nc: '4.45E17',
-        Nv: '7.72E18',
-        chi_s: '4.07',
-        Eg: '1.519 - (5.41E-4 * T * T) / (T + 204)'
-      }
-    };
-
-    const { Nc, Nv, chi_s, Eg } = materials[material];
-    data.Nc.value = Nc;
-    data.Nv.value = Nv;
-    data.chi_s.value = chi_s;
-    data.Eg.value = Eg;
-    moscap();
-  }
-
-  function setVoltage(value) {
-    data.V.value = value;
-    moscap();
-  }
-</script>
-
-<table align="center"><tbody><tr><td>
-
-<p style="text-align:center"><b>Band diagram</b></p>
-
-<table align="center">
-    <tbody>
-        <tr>
-            <td>
-                <p style="text-align:center;">Energy<br>[eV]</p>
-            </td>
-            <td>
-                <div id="placeholder1" style="width: 400px; height: 300px; position: relative;">
-                    <canvas class="flot-base" width="400" height="300"></canvas>
-                    <canvas class="flot-overlay" width="400" height="300" style="position: absolute; left: 0; top: 0;"></canvas>
-                    <div class="flot-text" style="position: absolute; inset: 0; font-size: smaller; color: #545454;">
-                        <div class="flot-x-axis xAxis" style="position: absolute; inset: 0; display: block;">
-                            <div class="flot-tick-label tickLabel" style="position: absolute; top: 282px; left: 62px; text-align: center;">0.00</div>
-                            <div class="flot-tick-label tickLabel" style="position: absolute; top: 282px; left: 138px; text-align: center;">0.05</div>
-                            <div class="flot-tick-label tickLabel" style="position: absolute; top: 282px; left: 214px; text-align: center;">0.10</div>
-                            <div class="flot-tick-label tickLabel" style="position: absolute; top: 282px; left: 290px; text-align: center;">0.15</div>
-                            <div class="flot-tick-label tickLabel" style="position: absolute; top: 282px; left: 366px; text-align: center;">0.20</div>
-                        </div>
-                        <div class="flot-y-axis yAxis" style="position: absolute; inset: 0; display: block;">
-                            <div class="flot-tick-label tickLabel" style="position: absolute; top: 269px; left: 2px; text-align: right;">-2.5</div>
-                            <div class="flot-tick-label tickLabel" style="position: absolute; top: 235px; left: 2px; text-align: right;">-2.0</div>
-                            <div class="flot-tick-label tickLabel" style="position: absolute; top: 202px; left: 2px; text-align: right;">-1.5</div>
-                            <div class="flot-tick-label tickLabel" style="position: absolute; top: 168px; left: 2px; text-align: right;">-1.0</div>
-                            <div class="flot-tick-label tickLabel" style="position: absolute; top: 135px; left: 2px; text-align: right;">-0.5</div>
-                            <div class="flot-tick-label tickLabel" style="position: absolute; top: 101px; left: 6px; text-align: right;">0.0</div>
-                            <div class="flot-tick-label tickLabel" style="position: absolute; top: 67px; left: 6px; text-align: right;">0.5</div>
-                            <div class="flot-tick-label tickLabel" style="position: absolute; top: 34px; left: 6px; text-align: right;">1.0</div>
-                            <div class="flot-tick-label tickLabel" style="position: absolute; top: 0; left: 6px; text-align: right;">1.5</div>
-                        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <!-- Left Panel: Inputs and Results -->
+            <div class="lg:col-span-1 bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-semibold mb-4 border-b pb-2 text-gray-700">Inputs</h3>
+                <div id="input-container" class="space-y-4 text-sm">
+                    <!-- Input fields for simulation parameters -->
+                    <div>
+                        <label for="numMultipaths" class="font-medium">No. of Multipaths:</label>
+                        <input type="number" id="numMultipaths" value="100" class="input-field w-full p-2 border rounded-md mt-1 bg-gray-50">
                     </div>
-                    <div class="legend" style="position: absolute; top: 13px; right: 19px; background-color: rgba(255, 255, 255, 0.85);">
-                        <table style="font-size: smaller; color: #545454;">
-                            <tbody>
-                                <tr>
-                                    <td class="legendColorBox" style="padding: 1px;">
-                                        <div style="border: 1px solid #ccc;">
-                                            <div style="width: 4px; height: 0; border: 5px solid rgb(255, 0, 0); overflow: hidden;"></div>
-                                        </div>
-                                    </td>
-                                    <td class="legendLabel">E<sub>c</sub></td>
-                                </tr>
-                                <tr>
-                                    <td class="legendColorBox" style="padding: 1px;">
-                                        <div style="border: 1px solid #ccc;">
-                                            <div style="width: 4px; height: 0; border: 5px solid rgb(0, 0, 255); overflow: hidden;"></div>
-                                        </div>
-                                    </td>
-                                    <td class="legendLabel">E<sub>v</sub></td>
-                                </tr>
-                                <tr>
-                                    <td class="legendColorBox" style="padding: 1px;">
-                                        <div style="border: 1px solid #ccc;">
-                                            <div style="width: 4px; height: 0; border: 5px solid rgb(0, 0, 0); overflow: hidden;"></div>
-                                        </div>
-                                    </td>
-                                    <td class="legendLabel">E<sub>F</sub></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div>
+                        <label for="numSamples" class="font-medium">No. of Samples:</label>
+                        <input type="number" id="numSamples" value="1000" class="input-field w-full p-2 border rounded-md mt-1 bg-gray-50">
+                    </div>
+                    <div>
+                        <label for="samplingTime" class="font-medium">Sampling Time (sec):</label>
+                        <input type="number" id="samplingTime" value="0.001" step="0.001" class="input-field w-full p-2 border rounded-md mt-1 bg-gray-50">
+                    </div>
+                    <div>
+                        <label for="carrierFreq" class="font-medium">Carr. Freq (MHz):</label>
+                        <input type="number" id="carrierFreq" value="900" class="input-field w-full p-2 border rounded-md mt-1 bg-gray-50">
+                    </div>
+                    <div>
+                        <label for="velocity" class="font-medium">Velocity (m/s):</label>
+                        <input type="number" id="velocity" value="20" class="input-field w-full p-2 border rounded-md mt-1 bg-gray-50">
+                    </div>
+                    <div>
+                        <label for="threshold" class="font-medium">Threshold (dB):</label>
+                        <input type="number" id="threshold" value="0" class="input-field w-full p-2 border rounded-md mt-1 bg-gray-50">
+                    </div>
+                    <div>
+                        <label for="numChannels" class="font-medium">No. of Channels:</label>
+                        <input type="number" id="numChannels" value="5" min="1" max="10" class="input-field w-full p-2 border rounded-md mt-1 bg-gray-50">
+                    </div>
+                    <div>
+                        <label for="avgSNR" class="font-medium">Avg SNR (dB):</label>
+                        <input type="number" id="avgSNR" value="5" class="input-field w-full p-2 border rounded-md mt-1 bg-gray-50">
                     </div>
                 </div>
-            </td>
-        </tr>
-        <tr>
-            <td></td>
-            <td>
-                <p style="text-align:center;"><i>x</i> [μm]</p>
-            </td>
-        </tr>
-    </tbody>
-</table>
 
-
-</td><td>
-
-  <div class="table-container">
-    <table>
-      <tbody>
-        <tr>
-          <td>
-            <p>
-              <span class="math">E<sub>g</sub> =</span>
-              <span id="Eg_txt" class="value">1.12</span>&nbsp;eV
-            </p>
-          </td>
-          <td>
-            <p>
-              <span class="math">n<sub>i</sub> =</span>
-              <span id="ni_txt" class="value">6.40e+9</span>&nbsp;1/cm³
-            </p>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <p>
-              <span class="math">E<sub>s</sub> =</span>
-              <span id="Es_txt" class="value">1.57e+7</span>&nbsp;V/m
-            </p>
-          </td>
-          <td>
-            <p>
-              <span class="math">V<sub>s</sub> =</span>
-              <span id="Vs_txt" class="value">0.831</span>&nbsp;V
-            </p>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <p>
-              <span class="math">Q =</span>
-              <span id="Q_txt" class="value">-0.00167</span>&nbsp;C/m²
-            </p>
-          </td>
-          <td>
-            <p>
-              <span class="math">n(x=0) =</span>
-              <span id="n0_txt" class="value">37.2</span>&nbsp;×&nbsp;10<sup>15</sup>&nbsp;1/cm³
-            </p>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <p>
-              <span class="math">E<sub>ox</sub> =</span>
-              <span id="Eox_txt" class="value">4.70e+7</span>&nbsp;V/m
-            </p>
-          </td>
-          <td>
-            <p>
-              <span class="math">V<sub>shoot</sub> =</span>
-              <span id="Vtmp_txt" class="value">0.0000221</span>&nbsp;V
-            </p>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div class="flex-container">
-              <span class="math">$$\phi_s =$$</span>
-              <span id="phi_s_txt" class="value">5.05</span> eV
+                <!-- Action Buttons -->
+                <div class="grid grid-cols-3 gap-2 mt-6">
+                    <button id="submitButton" class="bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">SUBMIT</button>
+                    <button id="resetButton" class="bg-gray-600 text-white py-2 rounded-md hover:bg-gray-700 transition">RESET</button>
+                    <button id="reportButton" class="bg-green-600 text-white py-2 rounded-md hover:bg-green-700 transition" disabled>REPORT</button>
+                </div>
+                
+                <!-- Results Section -->
+                <div class="mt-6">
+                    <h3 class="text-lg font-semibold mb-4 border-b pb-2 text-gray-700">Download Values</h3>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <!-- MRC Results -->
+                        <div class="bg-blue-50 p-3 rounded-md">
+                            <h4 class="font-bold text-center text-blue-800 mb-2">MRC</h4>
+                            <p><strong>LCR Exp:</strong> <span id="mrcLcrExp">0</span></p>
+                            <p><strong>LCR Th:</strong> <span id="mrcLcrTh">0</span></p>
+                            <p><strong>ADF Exp:</strong> <span id="mrcAdfExp">0</span></p>
+                            <p><strong>ADF Th:</strong> <span id="mrcAdfTh">0</span></p>
+                        </div>
+                        <!-- SC Results -->
+                        <div class="bg-indigo-50 p-3 rounded-md">
+                            <h4 class="font-bold text-center text-indigo-800 mb-2">SC</h4>
+                            <p><strong>LCR Exp:</strong> <span id="scLcrExp">0</span></p>
+                            <p><strong>LCR Th:</strong> <span id="scLcrTh">0</span></p>
+                            <p><strong>ADF Exp:</strong> <span id="scAdfExp">0</span></p>
+                            <p><strong>ADF Th:</strong> <span id="scAdfTh">0</span></p>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </td>
-          <td>
-            <div class="flex-container">
-              <span class="math">$$V_{fb} = \phi_m - \phi_s =$$</span>
-              <span id="Vfb_txt" class="value">-0.972</span> V
+
+            <!-- Right Panel: Graphs -->
+            <div class="lg:col-span-3 bg-white p-6 rounded-lg shadow-md">
+                <!-- Main Channel Graph -->
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-center mb-2">Channel Envelope vs. Time</h3>
+                    <div id="channelChartContainer" class="relative h-80">
+                        <canvas id="channelChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Tabbed Graphs -->
+                <div>
+                    <div class="border-b border-gray-200">
+                        <nav id="tabs" class="-mb-px flex space-x-4" aria-label="Tabs">
+                            <button class="tab-button active" data-tab="lcr">LCR vs Th</button>
+                            <button class="tab-button" data-tab="adf">ADF vs Th</button>
+                            <button class="tab-button" data-tab="outage">Outage Probability</button>
+                        </nav>
+                    </div>
+                    <div class="pt-4">
+                        <div id="lcrContent" class="tab-content active">
+                            <div id="lcrChartContainer" class="relative h-80">
+                                <canvas id="lcrChart"></canvas>
+                            </div>
+                        </div>
+                        <div id="adfContent" class="tab-content">
+                            <div id="adfChartContainer" class="relative h-80">
+                                <canvas id="adfChart"></canvas>
+                            </div>
+                        </div>
+                        <div id="outageContent" class="tab-content">
+                            <div id="outageChartContainer" class="relative h-80">
+                                <canvas id="outageChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </td>
-        </tr>
-        <tr><td colspan="2">&nbsp;</td></tr>
-        <tr><td colspan="2"><p class="center-text">From the depletion approximation:</p></td></tr>
-        <tr>
-          <td>
-            <p>
-              <span class="math">max (x<sub>p</sub>) =</span>
-              <span id="xp_txt" class="value">0.107</span>&nbsp;μm
-            </p>
-          </td>
-          <td>
-            <p>
-              <span class="math">V<sub>T</sub> =</span>
-              <span id="VT_txt" class="value">0.0292</span>&nbsp;V
-            </p>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <p>
-              <span class="math">E<sub>s</sub> =</span>
-              <span id="Es0_txt" class="value">1.58e+7</span>&nbsp;V/m
-            </p>
-          </td>
-          <td>
-            <p>
-              <span class="math">V<sub>s</sub> =</span>
-              <span id="VIB0_txt" class="value">0.830</span>&nbsp;V
-            </p>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+        </div>
+    </div>
 
-</td></tr></tbody></table>
+    <script>
+        // --- CHART INITIALIZATION ---
+        let channelChart, lcrChart, adfChart, outageChart;
+        let userName = '';
 
+        // Color palette for chart lines
+        const channelColors = [
+            '#a855f7', '#8b5cf6', '#6366f1', '#3b82f6', '#14b8a6',
+            '#22c55e', '#84cc16', '#eab308', '#f97316', '#ef4444'
+        ];
+        const scColor = '#000000'; // Black for SC
+        const mrcColor = '#dc2626'; // Red for MRC
 
+        // Function to initialize charts with empty data
+        function initializeCharts() {
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: { display: false },
+                    legend: { position: 'bottom' }
+                },
+                animation: false // Disable animation for faster rendering for PDF capture
+            };
 
-</div>
-   <!--simulation end -->
-  	 
-</body><!--body tag end-->
-</html><!--html tag end-->
+            if (channelChart) channelChart.destroy();
+            const channelCtx = document.getElementById('channelChart').getContext('2d');
+            const channelChartOptions = {
+                ...chartOptions,
+                scales: {
+                    x: { 
+                        type: 'linear',
+                        title: { display: true, text: 'Time (sec)' },
+                        min: 0.0,
+                        max: 1.0,
+                        ticks: {
+                            stepSize: 0.05,
+                            callback: function(value, index, values) {
+                                return value.toFixed(2);
+                            }
+                        }
+                    },
+                    y: { title: { display: true, text: 'X (dB)' } }
+                }
+            };
+            channelChart = new Chart(channelCtx, { type: 'line', data: { labels: [], datasets: [] }, options: channelChartOptions });
+
+            if (lcrChart) lcrChart.destroy();
+            const lcrCtx = document.getElementById('lcrChart').getContext('2d');
+            lcrChart = new Chart(lcrCtx, { type: 'line', data: { labels: [], datasets: [] }, options: { ...chartOptions, scales: { x: { title: { display: true, text: 'Threshold (dB)' } }, y: { title: { display: true, text: 'LCR' } } } } });
+
+            if (adfChart) adfChart.destroy();
+            const adfCtx = document.getElementById('adfChart').getContext('2d');
+            adfChart = new Chart(adfCtx, { type: 'line', data: { labels: [], datasets: [] }, options: { ...chartOptions, scales: { x: { title: { display: true, text: 'Threshold (dB)' } }, y: { title: { display: true, text: 'ADF' } } } } });
+
+            if (outageChart) outageChart.destroy();
+            const outageCtx = document.getElementById('outageChart').getContext('2d');
+            outageChart = new Chart(outageCtx, { type: 'line', data: { labels: [], datasets: [] }, options: { ...chartOptions, scales: { x: { title: { display: true, text: 'Threshold (dB)' } }, y: { title: { display: true, text: 'Prob<Th' } } } } });
+        }
+
+        // --- SIMULATION LOGIC ---
+        
+        // Main function to run the simulation
+        function runSimulation() {
+            // Get input values from the DOM
+            const numMultipaths = parseInt(document.getElementById('numMultipaths').value);
+            const numSamples = parseInt(document.getElementById('numSamples').value);
+            const samplingTime = parseFloat(document.getElementById('samplingTime').value);
+            const carrierFreq = parseFloat(document.getElementById('carrierFreq').value) * 1e6; // MHz to Hz
+            const velocity = parseFloat(document.getElementById('velocity').value);
+            const thresholdDB = parseFloat(document.getElementById('threshold').value);
+            const numChannels = parseInt(document.getElementById('numChannels').value);
+            const avgSNRLin = 10**(parseFloat(document.getElementById('avgSNR').value) / 10);
+
+            const c = 3e8; // Speed of light
+            const maxDopplerShift = (velocity * carrierFreq) / c;
+            
+            // Time vector for the simulation
+            const time = Array.from({ length: numSamples }, (_, i) => i * samplingTime);
+
+            // Generate fading for all channels
+            const channelsData = Array.from({ length: numChannels }, () => 
+                generateRayleighFading(numMultipaths, numSamples, maxDopplerShift, time, avgSNRLin)
+            );
+
+            // Perform diversity combining
+            const scData = selectionCombining(channelsData);
+            const mrcData = mrcCombining(channelsData);
+            
+            // Update the main channel plot
+            updateChannelChart(time, channelsData, scData, mrcData);
+
+            // Calculate and display metrics for the single threshold
+            calculateAndDisplayMetrics(channelsData, scData, mrcData, thresholdDB, maxDopplerShift, avgSNRLin);
+
+            // Calculate and plot metrics over a range of thresholds
+            plotMetricsOverThresholds(channelsData, scData, mrcData, maxDopplerShift, avgSNRLin);
+        }
+
+        /**
+         * Generates a Rayleigh fading envelope.
+         * This is based on the sum of sinusoids method (Jakes' model).
+         * @returns {Float32Array} The signal envelope in linear scale.
+         */
+        function generateRayleighFading(numPaths, numSamples, fm, time, avgPower) {
+            const envelope = new Float32Array(numSamples).fill(0);
+            const inPhase = new Float32Array(numSamples).fill(0);
+            const quadrature = new Float32Array(numSamples).fill(0);
+            
+            // Generate random phases for each multipath component
+            const phases = Array.from({ length: numPaths }, () => Math.random() * 2 * Math.PI);
+            
+            for (let i = 0; i < numPaths; i++) {
+                // Assume uniform angle of arrival
+                const alpha = (Math.random() * 2 * Math.PI) - Math.PI; 
+                const doppler = fm * Math.cos(alpha);
+
+                for (let t = 0; t < numSamples; t++) {
+                    const angle = 2 * Math.PI * doppler * time[t] + phases[i];
+                    inPhase[t] += Math.cos(angle);
+                    quadrature[t] += Math.sin(angle);
+                }
+            }
+            
+            // Normalize to get desired average power and calculate envelope
+            const normFactor = Math.sqrt(avgPower / numPaths);
+            for (let t = 0; t < numSamples; t++) {
+                const i = inPhase[t] * normFactor;
+                const q = quadrature[t] * normFactor;
+                envelope[t] = Math.sqrt(i*i + q*q);
+            }
+            return envelope;
+        }
+
+        // --- DIVERSITY COMBINING ---
+        
+        function selectionCombining(channels) {
+            const numSamples = channels[0].length;
+            const combined = new Float32Array(numSamples);
+            for (let i = 0; i < numSamples; i++) {
+                let maxVal = -1;
+                for (let j = 0; j < channels.length; j++) {
+                    if (channels[j][i] > maxVal) {
+                        maxVal = channels[j][i];
+                    }
+                }
+                combined[i] = maxVal;
+            }
+            return combined;
+        }
+
+        function mrcCombining(channels) {
+            const numSamples = channels[0].length;
+            const combined = new Float32Array(numSamples);
+            for (let i = 0; i < numSamples; i++) {
+                let sumOfSquares = 0;
+                for (let j = 0; j < channels.length; j++) {
+                    sumOfSquares += channels[j][i]**2;
+                }
+                combined[i] = Math.sqrt(sumOfSquares);
+            }
+            return combined;
+        }
+
+        // --- METRIC CALCULATIONS ---
+
+        /**
+         * Calculates experimental LCR and ADF.
+         * @param {Float32Array} envelope - The signal envelope (linear).
+         * @param {number} thresholdLin - The threshold (linear).
+         * @param {number} totalTime - Total simulation time.
+         * @returns {object} { lcr, adf }
+         */
+        function calculateExperimentalMetrics(envelope, thresholdLin, totalTime) {
+            let crossings = 0;
+            let timeBelowThreshold = 0;
+            const numSamples = envelope.length;
+
+            for (let i = 1; i < numSamples; i++) {
+                if (envelope[i-1] < thresholdLin && envelope[i] >= thresholdLin) {
+                    crossings++;
+                }
+                if (envelope[i] < thresholdLin) {
+                    timeBelowThreshold += (totalTime / numSamples);
+                }
+            }
+            
+            const lcr = crossings / totalTime;
+            const adf = crossings > 0 ? timeBelowThreshold / crossings : 0;
+            return { lcr, adf };
+        }
+
+        /**
+         * Calculates theoretical LCR and ADF for single-branch Rayleigh fading.
+         */
+        function calculateTheoreticalRayleigh(thresholdDB, avgPower, fm) {
+            const R_rms = Math.sqrt(avgPower);
+            const R = R_rms * 10**(thresholdDB / 20);
+            const rho = R / R_rms;
+            
+            const lcr = Math.sqrt(2 * Math.PI) * fm * rho * Math.exp(-(rho**2));
+            const adf = (Math.exp(rho**2) - 1) / (rho * fm * Math.sqrt(2 * Math.PI));
+            
+            return { lcr: isNaN(lcr) ? 0 : lcr, adf: isNaN(adf) ? 0 : adf };
+        }
+
+        /**
+         * Calculates theoretical LCR and ADF for MRC, based on provided PDF.
+         */
+        function calculateTheoreticalMRC(thresholdDB, avgPower, fm, M) {
+            // Formula for LCR is from Theory.pdf, page 3.
+            // Note: This formula appears non-standard and may produce unexpected results.
+            const R = Math.sqrt(avgPower) * 10**(thresholdDB / 20);
+            const gamma = R;
+            const f0 = fm;
+
+            const term1_base = gamma / Math.sqrt(Math.PI**2 + M);
+            const term1 = Math.sqrt(2 * Math.PI) * Math.pow(term1_base, M - 0.5);
+            const term2 = factorial(M - 1);
+            const term3 = Math.exp(-(gamma / Math.sqrt(M**2 + M)));
+            
+            let lcr = 0;
+            if (term2 > 0) {
+                lcr = 0.5 * f0 * (term1 / term2) * term3;
+            }
+
+            // ADF is calculated as Outage Probability / LCR
+            const rho = 10**(thresholdDB/10);
+            let mrcSum = 0;
+            for(let k=0; k<M; k++){
+                mrcSum += Math.pow(rho, k) / factorial(k);
+            }
+            const outage = (1 - Math.exp(-rho) * mrcSum);
+            const adf = (lcr > 0) ? outage / lcr : 0;
+
+            return { lcr: isNaN(lcr) ? 0 : lcr, adf: isNaN(adf) ? 0 : adf };
+        }
+        
+        // --- UI AND PLOTTING ---
+
+        function updateChannelChart(time, channelsData, scData, mrcData) {
+            const datasets = [];
+
+            const formatDataForChart = (time, data) => {
+                return time.map((t, i) => ({x: t, y: 10 * Math.log10(data[i]**2)}));
+            };
+            
+            // Add individual channels
+            channelsData.forEach((data, i) => {
+                datasets.push({
+                    label: `Ch${i}`,
+                    data: formatDataForChart(time, data),
+                    borderColor: channelColors[i % channelColors.length],
+                    borderWidth: 1.5,
+                    pointRadius: 0,
+                    fill: false
+                });
+            });
+
+            // Add SC data
+            datasets.push({
+                label: 'SC',
+                data: formatDataForChart(time, scData),
+                borderColor: scColor,
+                borderWidth: 2,
+                pointRadius: 0,
+                fill: false
+            });
+
+            // Add MRC data
+            datasets.push({
+                label: 'MRC',
+                data: formatDataForChart(time, mrcData),
+                borderColor: mrcColor,
+                borderWidth: 2,
+                pointRadius: 0,
+                fill: false
+            });
+
+            channelChart.data.datasets = datasets;
+            channelChart.update();
+        }
+        
+        function calculateAndDisplayMetrics(channelsData, scData, mrcData, thresholdDB, fm, avgPower) {
+            const totalTime = channelsData[0].length * parseFloat(document.getElementById('samplingTime').value);
+            const thresholdLin = Math.sqrt(avgPower) * 10**(thresholdDB / 20);
+            const numChannels = channelsData.length;
+
+            // SC Metrics
+            const scExp = calculateExperimentalMetrics(scData, thresholdLin, totalTime);
+            const scTh = calculateTheoreticalRayleigh(thresholdDB, avgPower, fm); // Using single branch as approximation for SC
+            document.getElementById('scLcrExp').textContent = scExp.lcr.toFixed(4);
+            document.getElementById('scAdfExp').textContent = scExp.adf.toFixed(4);
+            document.getElementById('scLcrTh').textContent = scTh.lcr.toFixed(4);
+            document.getElementById('scAdfTh').textContent = scTh.adf.toFixed(4);
+
+            // MRC Metrics
+            const mrcExp = calculateExperimentalMetrics(mrcData, thresholdLin, totalTime);
+            const mrcTh = calculateTheoreticalMRC(thresholdDB, avgPower, fm, numChannels);
+            document.getElementById('mrcLcrExp').textContent = mrcExp.lcr.toFixed(4);
+            document.getElementById('mrcAdfExp').textContent = mrcExp.adf.toFixed(4);
+            document.getElementById('mrcLcrTh').textContent = mrcTh.lcr.toFixed(4);
+            document.getElementById('mrcAdfTh').textContent = mrcTh.adf.toFixed(4);
+        }
+
+        function plotMetricsOverThresholds(channelsData, scData, mrcData, fm, avgPower) {
+            const thresholdsDB = Array.from({ length: 41 }, (_, i) => -20 + i); // -20dB to 20dB
+            const totalTime = channelsData[0].length * parseFloat(document.getElementById('samplingTime').value);
+            const M = channelsData.length;
+
+            const scLcrExp = [], scAdfExp = [], scOutageExp = [];
+            const mrcLcrExp = [], mrcAdfExp = [], mrcOutageExp = [];
+            const mrcLcrTh = [], mrcAdfTh = [];
+            const scOutageTh = [], mrcOutageTh = [];
+
+            thresholdsDB.forEach(thDB => {
+                const thresholdLin = Math.sqrt(avgPower) * 10**(thDB / 20);
+                
+                // --- Experimental ---
+                const scExp = calculateExperimentalMetrics(scData, thresholdLin, totalTime);
+                const mrcExp = calculateExperimentalMetrics(mrcData, thresholdLin, totalTime);
+                scLcrExp.push(scExp.lcr);
+                scAdfExp.push(scExp.adf);
+                mrcLcrExp.push(mrcExp.lcr);
+                mrcAdfExp.push(mrcExp.adf);
+                
+                const scTimeBelow = scData.filter(v => v < thresholdLin).length;
+                const mrcTimeBelow = mrcData.filter(v => v < thresholdLin).length;
+                scOutageExp.push(scTimeBelow / scData.length);
+                mrcOutageExp.push(mrcTimeBelow / mrcData.length);
+                
+                // --- Theoretical ---
+                const mrcTh = calculateTheoreticalMRC(thDB, avgPower, fm, M);
+                mrcLcrTh.push(mrcTh.lcr);
+                mrcAdfTh.push(mrcTh.adf);
+
+                const rho = 10**(thDB/10); // rho^2 = R^2 / avgPower
+                const singleBranchOutage = 1 - Math.exp(-rho);
+                scOutageTh.push(Math.pow(singleBranchOutage, M));
+                
+                // MRC Outage (Gamma distribution)
+                let mrcSum = 0;
+                for(let k=0; k<M; k++){
+                    mrcSum += Math.pow(rho, k) / factorial(k);
+                }
+                mrcOutageTh.push( (1 - Math.exp(-rho) * mrcSum) );
+
+            });
+            
+            // Update LCR Chart
+            lcrChart.data.labels = thresholdsDB;
+            lcrChart.data.datasets = [
+                { label: 'SC Exp', data: scLcrExp, borderColor: scColor, borderWidth: 2, pointRadius: 0, borderDash: [5, 5] },
+                { label: 'MRC Exp', data: mrcLcrExp, borderColor: mrcColor, borderWidth: 2, pointRadius: 0, borderDash: [5, 5] },
+                { label: 'MRC Theory', data: mrcLcrTh, borderColor: mrcColor, borderWidth: 2, pointRadius: 0 },
+            ];
+            lcrChart.update();
+
+            // Update ADF Chart
+            adfChart.data.labels = thresholdsDB;
+            adfChart.data.datasets = [
+                { label: 'SC Exp', data: scAdfExp, borderColor: scColor, borderWidth: 2, pointRadius: 0, borderDash: [5, 5] },
+                { label: 'MRC Exp', data: mrcAdfExp, borderColor: mrcColor, borderWidth: 2, pointRadius: 0, borderDash: [5, 5] },
+                { label: 'MRC Theory', data: mrcAdfTh, borderColor: mrcColor, borderWidth: 2, pointRadius: 0 },
+            ];
+            adfChart.update();
+
+            // Update Outage Chart
+            outageChart.data.labels = thresholdsDB;
+            outageChart.data.datasets = [
+                { label: 'SC Exp', data: scOutageExp, borderColor: scColor, borderWidth: 2, pointRadius: 0, borderDash: [5, 5] },
+                { label: 'SC Theory', data: scOutageTh, borderColor: scColor, borderWidth: 2, pointRadius: 0 },
+                { label: 'MRC Exp', data: mrcOutageExp, borderColor: mrcColor, borderWidth: 2, pointRadius: 0, borderDash: [5, 5] },
+                { label: 'MRC Theory', data: mrcOutageTh, borderColor: mrcColor, borderWidth: 2, pointRadius: 0 },
+            ];
+            outageChart.update();
+        }
+        
+        function factorial(n) {
+            if (n < 0) return 0;
+            if (n === 0 || n === 1) return 1;
+            let result = 1;
+            for (let i = 2; i <= n; i++) {
+                result *= i;
+            }
+            return result;
+        }
+
+        // --- EVENT LISTENERS ---
+        const defaultValues = {
+            numMultipaths: 100,
+            numSamples: 1000,
+            samplingTime: 0.001,
+            carrierFreq: 900,
+            velocity: 20,
+            threshold: 0,
+            numChannels: 5,
+            avgSNR: 5
+        };
+        
+        const inputFields = document.querySelectorAll('.input-field');
+        const submitButton = document.getElementById('submitButton');
+        const resetButton = document.getElementById('resetButton');
+        const reportButton = document.getElementById('reportButton');
+
+        // Debounce function
+        let debounceTimeout;
+        function debounceRunSimulation() {
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(() => {
+                runSimulation();
+            }, 300); // 300ms delay
+        }
+
+        inputFields.forEach(field => {
+            field.addEventListener('input', debounceRunSimulation);
+        });
+
+        submitButton.addEventListener('click', () => {
+            inputFields.forEach(field => field.disabled = true);
+            submitButton.disabled = true;
+            reportButton.disabled = false;
+        });
+
+        resetButton.addEventListener('click', () => {
+            inputFields.forEach(field => {
+                field.disabled = false;
+                field.value = defaultValues[field.id];
+            });
+            submitButton.disabled = false;
+            reportButton.disabled = true;
+            runSimulation();
+        });
+
+        // Tab functionality
+        const tabs = document.getElementById('tabs');
+        tabs.addEventListener('click', (e) => {
+            if (e.target.classList.contains('tab-button')) {
+                tabs.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                e.target.classList.add('active');
+                document.getElementById(e.target.dataset.tab + 'Content').classList.add('active');
+            }
+        });
+        
+        // Modal functionality
+        const nameModal = document.getElementById('nameModal');
+        const startButton = document.getElementById('startButton');
+        const userNameInput = document.getElementById('userNameInput');
+        const simulationContainer = document.getElementById('simulationContainer');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        
+        startButton.addEventListener('click', () => {
+            const name = userNameInput.value.trim();
+            if (name) {
+                userName = name;
+                welcomeMessage.textContent = `Welcome, ${userName}!`;
+                nameModal.classList.add('hidden');
+                simulationContainer.classList.remove('hidden');
+                initializeCharts();
+                runSimulation();
+            } else {
+                // Optional: show an error if name is empty
+                userNameInput.classList.add('border-red-500');
+            }
+        });
+
+        reportButton.addEventListener('click', async () => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const html2canvasOptions = {
+                allowTaint: true,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            };
+
+            reportButton.textContent = 'Generating...';
+            reportButton.disabled = true;
+
+            try {
+                const originalActiveTab = document.querySelector('.tab-button.active');
+
+                // Helper function to switch tab and capture canvas
+                const captureChart = async (tabName) => {
+                    document.querySelector(`[data-tab='${tabName}']`).click();
+                    // Wait for tab content to become visible and chart to render
+                    await new Promise(resolve => setTimeout(resolve, 100)); 
+                    const canvas = await html2canvas(document.getElementById(`${tabName}ChartContainer`), html2canvasOptions);
+                    return canvas.toDataURL('image/jpeg', 0.9);
+                };
+                
+                // --- CAPTURE CHARTS ---
+                const channelImg = (await html2canvas(document.getElementById('channelChartContainer'), html2canvasOptions)).toDataURL('image/jpeg', 0.9);
+                const lcrImg = await captureChart('lcr');
+                const adfImg = await captureChart('adf');
+                const outageImg = await captureChart('outage');
+
+                // Restore original tab
+                if (originalActiveTab) {
+                    originalActiveTab.click();
+                }
+
+                // --- ADD HEADER ---
+                doc.setFontSize(12);
+                doc.text("Fading Channels & Mobile Communications", 10, 15);
+                doc.setFontSize(10);
+                doc.text("IIT Kharagpur", 10, 20);
+                const now = new Date();
+                const dateTimeString = `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
+                doc.text(`Date: ${dateTimeString}`, 10, 25);
+                
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
+                doc.text("Exp9: Flat Fading", 150, 15);
+                doc.text(`Name: ${userName.toUpperCase()}`, 150, 20);
+                doc.setFont('helvetica', 'normal');
+
+                // --- ADD CHARTS (2x2 Grid) ---
+                const chartWidth = 85;
+                const chartHeight = 55;
+                const startX = 15;
+                const startY = 40;
+                const paddingX = 10;
+                const paddingY = 15;
+
+                doc.setFontSize(9).setFont('helvetica', 'bold');
+                doc.text("Channel", startX + chartWidth / 2, startY - 2, { align: 'center' });
+                doc.addImage(channelImg, 'JPEG', startX, startY, chartWidth, chartHeight);
+                
+                const M = document.getElementById('numChannels').value;
+                doc.text(`Prob vs Th (M=${M})`, startX + chartWidth + paddingX + chartWidth / 2, startY - 2, { align: 'center' });
+                doc.addImage(outageImg, 'JPEG', startX + chartWidth + paddingX, startY, chartWidth, chartHeight);
+                
+                const secondRowY = startY + chartHeight + paddingY;
+                doc.text("LCR vs Th", startX + chartWidth / 2, secondRowY - 2, { align: 'center' });
+                doc.addImage(lcrImg, 'JPEG', startX, secondRowY, chartWidth, chartHeight);
+
+                doc.text("ADF vs Th", startX + chartWidth + paddingX + chartWidth / 2, secondRowY - 2, { align: 'center' });
+                doc.addImage(adfImg, 'JPEG', startX + chartWidth + paddingX, secondRowY, chartWidth, chartHeight);
+                doc.setFont('helvetica', 'normal');
+
+                // --- ADD TABLES ---
+                const inputData = [
+                    ['No. of Multipaths', document.getElementById('numMultipaths').value],
+                    ['No. of Samples', document.getElementById('numSamples').value],
+                    ['Sampling Time (sec)', document.getElementById('samplingTime').value],
+                    ['fc (Hz)', (parseFloat(document.getElementById('carrierFreq').value) * 1e6).toExponential(1)],
+                    ['Velocity (mps)', document.getElementById('velocity').value],
+                    ['Threshold (dB)', document.getElementById('threshold').value],
+                    ['No. of Branches', document.getElementById('numChannels').value],
+                    ['Avg SNR (dB)', document.getElementById('avgSNR').value]
+                ];
+
+                const resultsData = [
+                    ['SC', document.getElementById('scLcrExp').textContent, document.getElementById('scLcrTh').textContent, document.getElementById('scAdfExp').textContent, document.getElementById('scAdfTh').textContent],
+                    ['MRC', document.getElementById('mrcLcrExp').textContent, document.getElementById('mrcLcrTh').textContent, document.getElementById('mrcAdfExp').textContent, document.getElementById('mrcAdfTh').textContent]
+                ];
+
+                doc.autoTable({
+                    startY: secondRowY + chartHeight + 5,
+                    head: [['Input Parameters', '']],
+                    body: inputData,
+                    theme: 'grid',
+                    styles: { fontSize: 8, cellPadding: 1 },
+                    headStyles: { fillColor: [22, 160, 133], textColor: 255, fontSize: 9 },
+                    alternateRowStyles: { fillColor: [240, 240, 240] }
+                });
+
+                doc.autoTable({
+                    head: [['Type', 'LCR (Exp)', 'LCR (Th)', 'ADF (Exp)', 'ADF (Th)']],
+                    body: resultsData,
+                    theme: 'grid',
+                    styles: { fontSize: 8, cellPadding: 1 },
+                    headStyles: { fillColor: [22, 160, 133], textColor: 255, fontSize: 9 },
+                    alternateRowStyles: { fillColor: [240, 240, 240] }
+                });
+
+                // --- ADD FOOTER ---
+                let finalY = doc.lastAutoTable.finalY + 15;
+                const pageHeight = doc.internal.pageSize.getHeight();
+                if (finalY > pageHeight - 15) {
+                    doc.addPage();
+                    finalY = 20; 
+                }
+                doc.text(`(Signature of ${userName.toUpperCase()})`, 15, finalY);
+                doc.text("(Signature of Faculty)", 160, finalY);
+
+                // --- SAVE PDF ---
+                doc.save(`Report-${userName}.pdf`);
+            } catch (error) {
+                console.error("Failed to generate PDF:", error);
+                alert("Sorry, there was an error generating the PDF report. Please try again.");
+            } finally {
+                reportButton.textContent = 'REPORT';
+                reportButton.disabled = false;
+            }
+        });
+
+    </script>
+</body>
+</html>
