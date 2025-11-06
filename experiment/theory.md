@@ -14,21 +14,21 @@ $$f_m = v/c \cdot f_c$$
 
 Where,
 
-* `c = velocity light = 3 \times 10^8 m/s.`
-* `$f_c$ = carrier frequency.`
+* c = velocity light = $3 \times 10^8 m/s.$
+* $f_c$ = carrier frequency.
 
 Coherence time is defined as interval in time over which the signal remains correlated. It is defined as
 
 $$T_c = \frac{9}{16\pi f_m} (s)$$
 
-If symbol duration `$T_s \ll T_c$` it experience slow fading while if `$T_s > T_c$` it experience fast fading. The enveloped level crossing rate is defined as the rate at which the signal envelope crosses a specified level R in the positive (or negative) going direction.
+If symbol duration $T_s \ll T_c$ it experience slow fading while if $T_s > T_c$ it experience fast fading. The enveloped level crossing rate is defined as the rate at which the signal envelope crosses a specified level R in the positive (or negative) going direction.
 
-It requires the joint pdf `$(p(\alpha, \dot{\alpha}))$` of the enveloped level `$\alpha = |r|$` and enveloped slope `$\dot{\alpha} = |\dot{r}|$`
+It requires the joint pdf $(p(\alpha, \dot{\alpha}))$ of the enveloped level $\alpha = |r|$ and enveloped slope $\dot{\alpha} = |\dot{r}|$
 
 $$L_R = \sqrt{2\pi(k+1)} f_m \rho e^{-k-(k+1)\rho^2} I_0(2 \rho \sqrt{k(k+1)})$$
 $$\rho = R / \sqrt{\Omega_p} = R / R_{rms}$$
 
-`$R_{rms} = \sqrt{\Omega_p}$` is the enveloped level
+$R_{rms} = \sqrt{\Omega_p}$ is the enveloped level
 
 Rayleigh fading (k=0) and isotropic scattering
 $$L_R = \sqrt{2\pi} f_m \rho e^{-\rho^2}$$
@@ -41,9 +41,9 @@ $$L_r = f_m \frac{\sqrt{\pi} M \gamma}{\sqrt{\sigma}} \exp(-\frac{\gamma^2}{2\si
 
 Where,
 
-* `$f_m$` is the Maximum doppler frequency.
-* `$\sigma$` is the r.m.s value of the received signal voltage.
-* `$\gamma$` is the threshold voltage.
+* $f_m$ is the Maximum doppler frequency.
+* $\sigma$ is the r.m.s value of the received signal voltage.
+* $\gamma$ is the threshold voltage.
 * M = No. of channels
 
 ---
@@ -77,18 +77,19 @@ $$= 0 \quad (r < 0)$$
 
 Where,
 
-* `$\sigma$` is the r.m.s value of the received voltage signal before detection.
-* `$\sigma^2$` is the time average power of the received signal before enveloped detection.
+* $\sigma$ is the r.m.s value of the received voltage signal before detection.
+* $\sigma^2$ is the time average power of the received signal before enveloped detection.
 
 Probability of outage is defined as
 
 $$P(R) = P_r(r \le R) = \int_0^R p(r)dr = 1 - \exp\left(-\frac{R^2}{2\sigma^2}\right)$$
 
-The mean value `$r_{mean}$` of rayleigh distribution is given by
+The mean value $r_{mean}$ of rayleigh distribution is given by
 
 $$r_{mean} = E[r] = \int_0^\infty r p(r) dr = \sigma \sqrt{\pi/2} = 1.2533\sigma$$
 
 $$\sigma_r^2 = E[r^2] - E^2[r] = \int_0^\infty r^2 p(r) dr - \frac{\sigma^2 \pi}{2}$$
 $$= \sigma^2 (2 - \pi/2) = 0.4292\sigma^2$$
+
  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>    
  
