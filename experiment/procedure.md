@@ -2,23 +2,25 @@
 
 Follow the instructions given below to perform the experiments:-
 
-* Step1:- Click on the button START. A page appears with a dialogue box asking for your name.
+* Step1:- A page appears with a dialogue box asking for your name.
 
    <div align="center">
     <img src="images/instruction1.png" alt="Large Scale Fading">  
       </div>
 
-* Step 2:- Enter your name then Click Ok.
+* Step 2:- Enter your name then Click Start Simulation.
 
   <div align="center">
     <img src="images/instruction2.png" alt="Large Scale Fading">  
       </div>
-
+      
+* Step3:- Enter the input parameters value. Then click on "RESET" Button.Observed the waveform.
+  
    <div align="center">
     <img src="images/instruction3.png" alt="Large Scale Fading">  
       </div>
 
-* Step3:- Enter the input parameters value. Then click on "RESET" Button.Observed the waveform.
+* Step4:- Enter value of LCR Exp and ADF Exp in both MRC and SC from the waveform.Then Click on "SUBMIT" Button.
 
    <div align="center">
     <img src="images/instruction4.png" alt="Large Scale Fading">  
