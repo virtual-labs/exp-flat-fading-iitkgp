@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flat Fading Simulation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+    <style>
+        /* Custom styles for the application */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* --- NEW TAB STYLING --- */
+        .tab-button {
+            padding: 10px 20px;
+            margin-right: 4px;
+            background-color: #e5e7eb; /* Light Gray */
+            color: #4b5563; /* Dark Gray Text */
+            font-weight: 700;
+            border: 2px solid #d1d5db; /* Gray Border */
+            border-bottom: none;
+            border-radius: 8px 8px 0 0; /* Rounded Top Corners */
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .tab-button:hover {
+            background-color: #d1d5db; /* Slightly darker on hover */
+        }
+
+        .tab-button.active {
+            background-color: #2563eb; /* Bright Blue */
+            color: #ffffff; /* White Text */
+            border-color: #2563eb;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1); /* Subtle lift effect */
+        }
+        /* ----------------------- */
+
+        input:disabled {
+            background-color: #e5e7eb; /* Darker gray for disabled inputs */
+            cursor: not-allowed;
+        }
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        /* Style for the calculation inputs in the blue box */
+        .calc-input {
+            width: 60px;
+            padding: 2px 5px;
+            border-radius: 2px;
+            border: none;
+            color: black;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div id="nameModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-sm p-8 text-center">
+            <h2 class="text-2xl font-bold mb-2">Welcome!</h2>
+            <p class="text-gray-600 mb-6">What is your name?</p>
+            <input type="text" id="userNameInput" placeholder="Enter your name" class="w-full p-3 border rounded-md mb-4 focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+            <button id="startButton" class="w-full bg-blue-600 text-white py-3 rounded-md hover:bg-blue-700 transition text-lg font-semibold">Start Simulation</button>
+        </div>
+    </div>
+
+    <div id="simulationContainer" class="container mx-auto p-4 hidden">
+        <header class="text-center py-4 bg-white rounded-lg shadow-md mb-6">
+            <h1 class="text-3xl font-bold text-gray-700">Fading Channels and Mobile Communication</h1>
+            <h2 class="text-xl text-blue-600">Experiment: Flat Fading Simulation</h2>
+            <p class="text-md text-gray-500 mt-1" id="welcomeMessage"></p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            <div class="lg:col-span-1 space-y-6">
+                
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-lg font-semibold mb-4 border-b pb-2 text-gray-700">Inputs</h3>
+                    <div id="input-container" class="space-y-3 text-sm">
+                        <div class="flex justify-between items-center">
+                            <label for="numMultipaths" class="font-medium">No. of Multipaths:</label>
+                            <input type="number" id="numMultipaths" value="100" class="input-field w-20 p-1 border rounded-md bg-gray-50 text-right">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <label for="numSamples" class="font-medium">No. of Samples:</label>
+                            <input type="number" id="numSamples" value="1000" class="input-field w-20 p-1 border rounded-md bg-gray-50 text-right">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <label for="samplingTime" class="font-medium">Sampling Time (s):</label>
+                            <input type="number" id="samplingTime" value="0.001" step="0.001" class="input-field w-20 p-1 border rounded-md bg-gray-50 text-right">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <label for="carrierFreq" class="font-medium">Carr. Freq (MHz):</label>
+                            <input type="number" id="carrierFreq" value="900" class="input-field w-20 p-1 border rounded-md bg-gray-50 text-right">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <label for="velocity" class="font-medium">Velocity (m/s):</label>
+                            <input type="number" id="velocity" value="20" class="input-field w-20 p-1 border rounded-md bg-gray-50 text-right">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <label for="threshold" class="font-medium">Threshold (dB):</label>
+                            <input type="number" id="threshold" value="0" class="input-field w-20 p-1 border rounded-md bg-gray-50 text-right">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <label for="numChannels" class="font-medium">No. of Channels:</label>
+                            <input type="number" id="numChannels" value="5" min="1" max="10" class="input-field w-20 p-1 border rounded-md bg-gray-50 text-right">
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <label for="avgSNR" class="font-medium">Avg SNR (dB):</label>
+                            <input type="number" id="avgSNR" value="5" class="input-field w-20 p-1 border rounded-md bg-gray-50 text-right">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-blue-400 p-4 rounded-lg shadow-md text-white">
+                    <h3 class="text-lg font-bold mb-4 text-center text-yellow-300 uppercase tracking-wide">Download Values</h3>
+                    
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <h4 class="font-bold text-center border-b border-blue-300 pb-1 mb-2">MRC</h4>
+                            
+                            <div class="flex flex-col space-y-2">
+                                <div class="flex flex-col items-center">
+                                    <span class="text-xs font-semibold">LCR Exp:</span>
+                                    <div class="flex items-center gap-1">
+                                        <input type="text" id="mrcLcrExpInput" class="calc-input" placeholder="?">
+                                        <span id="mrcLcrExp" class="text-yellow-300 font-bold text-lg hidden">0</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex flex-col items-center">
+                                    <span class="text-xs font-semibold">LCR Th:</span>
+                                    <div class="flex items-center gap-1">
+                                        <input type="text" id="mrcLcrThInput" class="calc-input" placeholder="?">
+                                        <span id="mrcLcrTh" class="text-yellow-300 font-bold text-lg hidden">0</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col items-center">
+                                    <span class="text-xs font-semibold">ADF Exp:</span>
+                                    <div class="flex items-center gap-1">
+                                        <input type="text" id="mrcAdfExpInput" class="calc-input" placeholder="?">
+                                        <span id="mrcAdfExp" class="text-yellow-300 font-bold text-lg hidden">0</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col items-center">
+                                    <span class="text-xs font-semibold">ADF Th:</span>
+                                    <div class="flex items-center gap-1">
+                                        <input type="text" id="mrcAdfThInput" class="calc-input" placeholder="?">
+                                        <span id="mrcAdfTh" class="text-yellow-300 font-bold text-lg hidden">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="font-bold text-center border-b border-blue-300 pb-1 mb-2">SC</h4>
+                            
+                            <div class="flex flex-col space-y-2">
+                                <div class="flex flex-col items-center">
+                                    <span class="text-xs font-semibold">LCR Exp:</span>
+                                    <div class="flex items-center gap-1">
+                                        <input type="text" id="scLcrExpInput" class="calc-input" placeholder="?">
+                                        <span id="scLcrExp" class="text-yellow-300 font-bold text-lg hidden">0</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex flex-col items-center">
+                                    <span class="text-xs font-semibold">LCR Th:</span>
+                                    <div class="flex items-center gap-1">
+                                        <input type="text" id="scLcrThInput" class="calc-input" placeholder="?">
+                                        <span id="scLcrTh" class="text-yellow-300 font-bold text-lg hidden">0</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col items-center">
+                                    <span class="text-xs font-semibold">ADF Exp:</span>
+                                    <div class="flex items-center gap-1">
+                                        <input type="text" id="scAdfExpInput" class="calc-input" placeholder="?">
+                                        <span id="scAdfExp" class="text-yellow-300 font-bold text-lg hidden">0</span>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-col items-center">
+                                    <span class="text-xs font-semibold">ADF Th:</span>
+                                    <div class="flex items-center gap-1">
+                                        <input type="text" id="scAdfThInput" class="calc-input" placeholder="?">
+                                        <span id="scAdfTh" class="text-yellow-300 font-bold text-lg hidden">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 mt-6">
+                        <button id="submitButton" class="bg-gray-100 text-blue-800 py-1 px-2 rounded font-bold hover:bg-white shadow transition text-xs">SUBMIT</button>
+                        <button id="resetButton" class="bg-gray-100 text-gray-800 py-1 px-2 rounded font-bold hover:bg-white shadow transition text-xs">RESET</button>
+                        <button id="reportButton" class="bg-gray-100 text-green-700 py-1 px-2 rounded font-bold hover:bg-white shadow transition text-xs" disabled>REPORT</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-3 bg-white p-6 rounded-lg shadow-md">
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold text-center mb-2">Channel Envelope vs. Time</h3>
+                    <div id="channelChartContainer" class="relative h-80">
+                        <canvas id="channelChart"></canvas>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="border-b-2 border-gray-300">
+                        <nav id="tabs" class="-mb-0.5 flex" aria-label="Tabs">
+                            <button class="tab-button active" data-tab="lcr">LCR vs Th</button>
+                            <button class="tab-button" data-tab="adf">ADF vs Th</button>
+                            <button class="tab-button" data-tab="outage">Outage Probability</button>
+                        </nav>
+                    </div>
+                    <div class="pt-4">
+                        <div id="lcrContent" class="tab-content active">
+                            <div id="lcrChartContainer" class="relative h-80">
+                                <canvas id="lcrChart"></canvas>
+                            </div>
+                        </div>
+                        <div id="adfContent" class="tab-content">
+                            <div id="adfChartContainer" class="relative h-80">
+                                <canvas id="adfChart"></canvas>
+                            </div>
+                        </div>
+                        <div id="outageContent" class="tab-content">
+                            <div id="outageChartContainer" class="relative h-80">
+                                <canvas id="outageChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- CHART INITIALIZATION ---
+        let channelChart, lcrChart, adfChart, outageChart;
+        let userName = '';
+        
+        // Store calculated values to display on submit
+        let systemCalculatedResults = {};
+
+        // Color palette for chart lines
+        const channelColors = [
+            '#a855f7', '#8b5cf6', '#6366f1', '#3b82f6', '#14b8a6',
+            '#22c55e', '#84cc16', '#eab308', '#f97316', '#ef4444'
+        ];
+        const scColor = '#000000'; // Black for SC
+        const mrcColor = '#dc2626'; // Red for MRC
+
+        // Function to initialize charts with empty data
+        function initializeCharts() {
+            const chartOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: { display: false },
+                    legend: { position: 'bottom' }
+                },
+                animation: false // Disable animation for faster rendering
+            };
+
+            if (channelChart) channelChart.destroy();
+            const channelCtx = document.getElementById('channelChart').getContext('2d');
+            const channelChartOptions = {
+                ...chartOptions,
+                scales: {
+                    x: { 
+                        type: 'linear',
+                        title: { display: true, text: 'Time (sec)' },
+                        min: 0.0,
+                        max: 1.0,
+                        ticks: {
+                            stepSize: 0.05,
+                            callback: function(value, index, values) {
+                                return value.toFixed(2);
+                            }
+                        }
+                    },
+                    y: { title: { display: true, text: 'X (dB)' } }
+                }
+            };
+            channelChart = new Chart(channelCtx, { type: 'line', data: { labels: [], datasets: [] }, options: channelChartOptions });
+
+            if (lcrChart) lcrChart.destroy();
+            const lcrCtx = document.getElementById('lcrChart').getContext('2d');
+            lcrChart = new Chart(lcrCtx, { type: 'line', data: { labels: [], datasets: [] }, options: { ...chartOptions, scales: { x: { title: { display: true, text: 'Threshold (dB)' } }, y: { title: { display: true, text: 'LCR' } } } } });
+
+            if (adfChart) adfChart.destroy();
+            const adfCtx = document.getElementById('adfChart').getContext('2d');
+            adfChart = new Chart(adfCtx, { type: 'line', data: { labels: [], datasets: [] }, options: { ...chartOptions, scales: { x: { title: { display: true, text: 'Threshold (dB)' } }, y: { title: { display: true, text: 'ADF' } } } } });
+
+            if (outageChart) outageChart.destroy();
+            const outageCtx = document.getElementById('outageChart').getContext('2d');
+            outageChart = new Chart(outageCtx, { type: 'line', data: { labels: [], datasets: [] }, options: { ...chartOptions, scales: { x: { title: { display: true, text: 'Threshold (dB)' } }, y: { title: { display: true, text: 'Prob<Th' } } } } });
+        }
+
+        // --- SIMULATION LOGIC ---
+        
+        function runSimulation() {
+            // Get input values from the DOM (ONLY from the top-left inputs)
+            const numMultipaths = parseInt(document.getElementById('numMultipaths').value);
+            const numSamples = parseInt(document.getElementById('numSamples').value);
+            const samplingTime = parseFloat(document.getElementById('samplingTime').value);
+            const carrierFreq = parseFloat(document.getElementById('carrierFreq').value) * 1e6; // MHz to Hz
+            const velocity = parseFloat(document.getElementById('velocity').value);
+            const thresholdDB = parseFloat(document.getElementById('threshold').value);
+            const numChannels = parseInt(document.getElementById('numChannels').value);
+            const avgSNRLin = 10**(parseFloat(document.getElementById('avgSNR').value) / 10);
+
+            const c = 3e8; // Speed of light
+            const maxDopplerShift = (velocity * carrierFreq) / c;
+            
+            // Time vector for the simulation
+            const time = Array.from({ length: numSamples }, (_, i) => i * samplingTime);
+
+            // Generate fading for all channels
+            const channelsData = Array.from({ length: numChannels }, () => 
+                generateRayleighFading(numMultipaths, numSamples, maxDopplerShift, time, avgSNRLin)
+            );
+
+            // Perform diversity combining
+            const scData = selectionCombining(channelsData);
+            const mrcData = mrcCombining(channelsData);
+            
+            // Update the main channel plot
+            updateChannelChart(time, channelsData, scData, mrcData);
+
+            // Calculate metrics BUT DO NOT DISPLAY THEM YET (Store in variable)
+            storeMetrics(channelsData, scData, mrcData, thresholdDB, maxDopplerShift, avgSNRLin);
+
+            // Calculate and plot metrics over a range of thresholds
+            plotMetricsOverThresholds(channelsData, scData, mrcData, maxDopplerShift, avgSNRLin);
+        }
+
+        function generateRayleighFading(numPaths, numSamples, fm, time, avgPower) {
+            const envelope = new Float32Array(numSamples).fill(0);
+            const inPhase = new Float32Array(numSamples).fill(0);
+            const quadrature = new Float32Array(numSamples).fill(0);
+            
+            const phases = Array.from({ length: numPaths }, () => Math.random() * 2 * Math.PI);
+            
+            for (let i = 0; i < numPaths; i++) {
+                const alpha = (Math.random() * 2 * Math.PI) - Math.PI; 
+                const doppler = fm * Math.cos(alpha);
+
+                for (let t = 0; t < numSamples; t++) {
+                    const angle = 2 * Math.PI * doppler * time[t] + phases[i];
+                    inPhase[t] += Math.cos(angle);
+                    quadrature[t] += Math.sin(angle);
+                }
+            }
+            
+            const normFactor = Math.sqrt(avgPower / numPaths);
+            for (let t = 0; t < numSamples; t++) {
+                const i = inPhase[t] * normFactor;
+                const q = quadrature[t] * normFactor;
+                envelope[t] = Math.sqrt(i*i + q*q);
+            }
+            return envelope;
+        }
+
+        // --- DIVERSITY COMBINING ---
+        
+        function selectionCombining(channels) {
+            const numSamples = channels[0].length;
+            const combined = new Float32Array(numSamples);
+            for (let i = 0; i < numSamples; i++) {
+                let maxVal = -1;
+                for (let j = 0; j < channels.length; j++) {
+                    if (channels[j][i] > maxVal) {
+                        maxVal = channels[j][i];
+                    }
+                }
+                combined[i] = maxVal;
+            }
+            return combined;
+        }
+
+        function mrcCombining(channels) {
+            const numSamples = channels[0].length;
+            const combined = new Float32Array(numSamples);
+            for (let i = 0; i < numSamples; i++) {
+                let sumOfSquares = 0;
+                for (let j = 0; j < channels.length; j++) {
+                    sumOfSquares += channels[j][i]**2;
+                }
+                combined[i] = Math.sqrt(sumOfSquares);
+            }
+            return combined;
+        }
+
+        // --- METRIC CALCULATIONS ---
+
+        function calculateExperimentalMetrics(envelope, thresholdLin, totalTime) {
+            let crossings = 0;
+            let timeBelowThreshold = 0;
+            const numSamples = envelope.length;
+
+            for (let i = 1; i < numSamples; i++) {
+                if (envelope[i-1] < thresholdLin && envelope[i] >= thresholdLin) {
+                    crossings++;
+                }
+                if (envelope[i] < thresholdLin) {
+                    timeBelowThreshold += (totalTime / numSamples);
+                }
+            }
+            
+            const lcr = crossings / totalTime;
+            const adf = crossings > 0 ? timeBelowThreshold / crossings : 0;
+            return { lcr, adf };
+        }
+
+        function calculateTheoreticalRayleigh(thresholdDB, avgPower, fm) {
+            const R_rms = Math.sqrt(avgPower);
+            const R = R_rms * 10**(thresholdDB / 20);
+            const rho = R / R_rms;
+            
+            const lcr = Math.sqrt(2 * Math.PI) * fm * rho * Math.exp(-(rho**2));
+            const adf = (Math.exp(rho**2) - 1) / (rho * fm * Math.sqrt(2 * Math.PI));
+            
+            return { lcr: isNaN(lcr) ? 0 : lcr, adf: isNaN(adf) ? 0 : adf };
+        }
+
+        function calculateTheoreticalMRC(thresholdDB, avgPower, fm, M) {
+            const R = Math.sqrt(avgPower) * 10**(thresholdDB / 20);
+            const gamma = R;
+            const f0 = fm;
+
+            const term1_base = gamma / Math.sqrt(Math.PI**2 + M);
+            const term1 = Math.sqrt(2 * Math.PI) * Math.pow(term1_base, M - 0.5);
+            const term2 = factorial(M - 1);
+            const term3 = Math.exp(-(gamma / Math.sqrt(M**2 + M)));
+            
+            let lcr = 0;
+            if (term2 > 0) {
+                lcr = 0.5 * f0 * (term1 / term2) * term3;
+            }
+
+            const rho = 10**(thresholdDB/10);
+            let mrcSum = 0;
+            for(let k=0; k<M; k++){
+                mrcSum += Math.pow(rho, k) / factorial(k);
+            }
+            const outage = (1 - Math.exp(-rho) * mrcSum);
+            const adf = (lcr > 0) ? outage / lcr : 0;
+
+            return { lcr: isNaN(lcr) ? 0 : lcr, adf: isNaN(adf) ? 0 : adf };
+        }
+        
+        // --- UI AND PLOTTING ---
+
+        function updateChannelChart(time, channelsData, scData, mrcData) {
+            const datasets = [];
+            const formatDataForChart = (time, data) => {
+                return time.map((t, i) => ({x: t, y: 10 * Math.log10(data[i]**2)}));
+            };
+            
+            channelsData.forEach((data, i) => {
+                datasets.push({
+                    label: `Ch${i}`,
+                    data: formatDataForChart(time, data),
+                    borderColor: channelColors[i % channelColors.length],
+                    borderWidth: 1.5,
+                    pointRadius: 0,
+                    fill: false
+                });
+            });
+
+            datasets.push({
+                label: 'SC',
+                data: formatDataForChart(time, scData),
+                borderColor: scColor,
+                borderWidth: 2,
+                pointRadius: 0,
+                fill: false
+            });
+
+            datasets.push({
+                label: 'MRC',
+                data: formatDataForChart(time, mrcData),
+                borderColor: mrcColor,
+                borderWidth: 2,
+                pointRadius: 0,
+                fill: false
+            });
+
+            channelChart.data.datasets = datasets;
+            channelChart.update();
+        }
+        
+        function storeMetrics(channelsData, scData, mrcData, thresholdDB, fm, avgPower) {
+            const totalTime = channelsData[0].length * parseFloat(document.getElementById('samplingTime').value);
+            const thresholdLin = Math.sqrt(avgPower) * 10**(thresholdDB / 20);
+            const numChannels = channelsData.length;
+
+            // SC Metrics
+            const scExp = calculateExperimentalMetrics(scData, thresholdLin, totalTime);
+            const scTh = calculateTheoreticalRayleigh(thresholdDB, avgPower, fm);
+
+            // MRC Metrics
+            const mrcExp = calculateExperimentalMetrics(mrcData, thresholdLin, totalTime);
+            const mrcTh = calculateTheoreticalMRC(thresholdDB, avgPower, fm, numChannels);
+
+            // Store in global object, do not update DOM yet
+            systemCalculatedResults = {
+                scLcrExp: scExp.lcr.toFixed(4),
+                scAdfExp: scExp.adf.toFixed(4),
+                scLcrTh: scTh.lcr.toFixed(4),
+                scAdfTh: scTh.adf.toFixed(4),
+                mrcLcrExp: mrcExp.lcr.toFixed(4),
+                mrcAdfExp: mrcExp.adf.toFixed(4),
+                mrcLcrTh: mrcTh.lcr.toFixed(4),
+                mrcAdfTh: mrcTh.adf.toFixed(4)
+            };
+        }
+
+        function plotMetricsOverThresholds(channelsData, scData, mrcData, fm, avgPower) {
+            const thresholdsDB = Array.from({ length: 41 }, (_, i) => -20 + i); // -20dB to 20dB
+            const totalTime = channelsData[0].length * parseFloat(document.getElementById('samplingTime').value);
+            const M = channelsData.length;
+
+            const scLcrExp = [], scAdfExp = [], scOutageExp = [];
+            const mrcLcrExp = [], mrcAdfExp = [], mrcOutageExp = [];
+            const mrcLcrTh = [], mrcAdfTh = [];
+            const scOutageTh = [], mrcOutageTh = [];
+
+            thresholdsDB.forEach(thDB => {
+                const thresholdLin = Math.sqrt(avgPower) * 10**(thDB / 20);
+                
+                const scExp = calculateExperimentalMetrics(scData, thresholdLin, totalTime);
+                const mrcExp = calculateExperimentalMetrics(mrcData, thresholdLin, totalTime);
+                scLcrExp.push(scExp.lcr);
+                scAdfExp.push(scExp.adf);
+                mrcLcrExp.push(mrcExp.lcr);
+                mrcAdfExp.push(mrcExp.adf);
+                
+                const scTimeBelow = scData.filter(v => v < thresholdLin).length;
+                const mrcTimeBelow = mrcData.filter(v => v < thresholdLin).length;
+                scOutageExp.push(scTimeBelow / scData.length);
+                mrcOutageExp.push(mrcTimeBelow / mrcData.length);
+                
+                const mrcTh = calculateTheoreticalMRC(thDB, avgPower, fm, M);
+                mrcLcrTh.push(mrcTh.lcr);
+                mrcAdfTh.push(mrcTh.adf);
+
+                const rho = 10**(thDB/10); 
+                const singleBranchOutage = 1 - Math.exp(-rho);
+                scOutageTh.push(Math.pow(singleBranchOutage, M));
+                
+                let mrcSum = 0;
+                for(let k=0; k<M; k++){
+                    mrcSum += Math.pow(rho, k) / factorial(k);
+                }
+                mrcOutageTh.push( (1 - Math.exp(-rho) * mrcSum) );
+            });
+            
+            lcrChart.data.labels = thresholdsDB;
+            lcrChart.data.datasets = [
+                { label: 'SC Exp', data: scLcrExp, borderColor: scColor, borderWidth: 2, pointRadius: 0, borderDash: [5, 5] },
+                { label: 'MRC Exp', data: mrcLcrExp, borderColor: mrcColor, borderWidth: 2, pointRadius: 0, borderDash: [5, 5] },
+                { label: 'MRC Theory', data: mrcLcrTh, borderColor: mrcColor, borderWidth: 2, pointRadius: 0 },
+            ];
+            lcrChart.update();
+
+            adfChart.data.labels = thresholdsDB;
+            adfChart.data.datasets = [
+                { label: 'SC Exp', data: scAdfExp, borderColor: scColor, borderWidth: 2, pointRadius: 0, borderDash: [5, 5] },
+                { label: 'MRC Exp', data: mrcAdfExp, borderColor: mrcColor, borderWidth: 2, pointRadius: 0, borderDash: [5, 5] },
+                { label: 'MRC Theory', data: mrcAdfTh, borderColor: mrcColor, borderWidth: 2, pointRadius: 0 },
+            ];
+            adfChart.update();
+
+            outageChart.data.labels = thresholdsDB;
+            outageChart.data.datasets = [
+                { label: 'SC Exp', data: scOutageExp, borderColor: scColor, borderWidth: 2, pointRadius: 0, borderDash: [5, 5] },
+                { label: 'SC Theory', data: scOutageTh, borderColor: scColor, borderWidth: 2, pointRadius: 0 },
+                { label: 'MRC Exp', data: mrcOutageExp, borderColor: mrcColor, borderWidth: 2, pointRadius: 0, borderDash: [5, 5] },
+                { label: 'MRC Theory', data: mrcOutageTh, borderColor: mrcColor, borderWidth: 2, pointRadius: 0, borderDash: [5, 5] },
+            ];
+            outageChart.update();
+        }
+        
+        function factorial(n) {
+            if (n < 0) return 0;
+            if (n === 0 || n === 1) return 1;
+            let result = 1;
+            for (let i = 2; i <= n; i++) {
+                result *= i;
+            }
+            return result;
+        }
+
+        // --- EVENT LISTENERS ---
+        const defaultValues = {
+            numMultipaths: 100,
+            numSamples: 1000,
+            samplingTime: 0.001,
+            carrierFreq: 900,
+            velocity: 20,
+            threshold: 0,
+            numChannels: 5,
+            avgSNR: 5
+        };
+        
+        // Only select the main input fields (top left) for the simulation trigger
+        const inputFields = document.querySelectorAll('.input-field');
+        const submitButton = document.getElementById('submitButton');
+        const resetButton = document.getElementById('resetButton');
+        const reportButton = document.getElementById('reportButton');
+
+        // Debounce function to run simulation (updates graphs, but not numbers)
+        let debounceTimeout;
+        function debounceRunSimulation() {
+            clearTimeout(debounceTimeout);
+            debounceTimeout = setTimeout(() => {
+                runSimulation();
+            }, 300);
+        }
+
+        // Attach listener only to the main inputs
+        inputFields.forEach(field => {
+            field.addEventListener('input', debounceRunSimulation);
+        });
+
+        submitButton.addEventListener('click', () => {
+            // Disable Inputs
+            inputFields.forEach(field => field.disabled = true);
+            // Also disable the calculation inputs
+            document.querySelectorAll('.calc-input').forEach(field => field.disabled = true);
+
+            submitButton.disabled = true;
+            reportButton.disabled = false;
+
+            // Populate the result spans with the stored calculations
+            for (const [key, value] of Object.entries(systemCalculatedResults)) {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.textContent = value;
+                    element.classList.remove('hidden'); // Show the yellow text
+                }
+            }
+        });
+
+        resetButton.addEventListener('click', () => {
+            // Enable and reset main inputs
+            inputFields.forEach(field => {
+                field.disabled = false;
+                if (defaultValues[field.id] !== undefined) {
+                    field.value = defaultValues[field.id];
+                }
+            });
+            
+            // Enable and clear user calculation inputs
+            document.querySelectorAll('.calc-input').forEach(field => {
+                field.disabled = false;
+                field.value = ''; 
+            });
+            
+            // Hide result values
+            ['scLcrExp', 'scLcrTh', 'scAdfExp', 'scAdfTh', 'mrcLcrExp', 'mrcLcrTh', 'mrcAdfExp', 'mrcAdfTh'].forEach(id => {
+                const el = document.getElementById(id);
+                el.classList.add('hidden');
+                el.textContent = '0';
+            });
+
+            submitButton.disabled = false;
+            reportButton.disabled = true;
+            runSimulation();
+        });
+
+        const tabs = document.getElementById('tabs');
+        tabs.addEventListener('click', (e) => {
+            if (e.target.classList.contains('tab-button')) {
+                tabs.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                e.target.classList.add('active');
+                document.getElementById(e.target.dataset.tab + 'Content').classList.add('active');
+            }
+        });
+        
+        const nameModal = document.getElementById('nameModal');
+        const startButton = document.getElementById('startButton');
+        const userNameInput = document.getElementById('userNameInput');
+        const simulationContainer = document.getElementById('simulationContainer');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        
+        startButton.addEventListener('click', () => {
+            const name = userNameInput.value.trim();
+            if (name) {
+                userName = name;
+                welcomeMessage.textContent = `Welcome, ${userName}!`;
+                nameModal.classList.add('hidden');
+                simulationContainer.classList.remove('hidden');
+                initializeCharts();
+                runSimulation();
+            } else {
+                userNameInput.classList.add('border-red-500');
+            }
+        });
+
+        reportButton.addEventListener('click', async () => {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            const html2canvasOptions = {
+                allowTaint: true,
+                useCORS: true,
+                backgroundColor: '#ffffff'
+            };
+
+            reportButton.textContent = 'Generating...';
+            reportButton.disabled = true;
+
+            try {
+                const originalActiveTab = document.querySelector('.tab-button.active');
+
+                const captureChart = async (tabName) => {
+                    document.querySelector(`[data-tab='${tabName}']`).click();
+                    await new Promise(resolve => setTimeout(resolve, 100)); 
+                    const canvas = await html2canvas(document.getElementById(`${tabName}ChartContainer`), html2canvasOptions);
+                    return canvas.toDataURL('image/jpeg', 0.9);
+                };
+                
+                const channelImg = (await html2canvas(document.getElementById('channelChartContainer'), html2canvasOptions)).toDataURL('image/jpeg', 0.9);
+                const lcrImg = await captureChart('lcr');
+                const adfImg = await captureChart('adf');
+                const outageImg = await captureChart('outage');
+
+                if (originalActiveTab) {
+                    originalActiveTab.click();
+                }
+
+                doc.setFontSize(12);
+                doc.text("Fading Channels & Mobile Communications", 10, 15);
+                doc.setFontSize(10);
+                doc.text("IIT Kharagpur", 10, 20);
+                const now = new Date();
+                const dateTimeString = `${now.toLocaleDateString()} ${now.toLocaleTimeString()}`;
+                doc.text(`Date: ${dateTimeString}`, 10, 25);
+                
+                doc.setFontSize(12);
+                doc.setFont('helvetica', 'bold');
+                doc.text("Exp9: Flat Fading", 150, 15);
+                doc.text(`Name: ${userName.toUpperCase()}`, 150, 20);
+                doc.setFont('helvetica', 'normal');
+
+                const chartWidth = 85;
+                const chartHeight = 55;
+                const startX = 15;
+                const startY = 40;
+                const paddingX = 10;
+                const paddingY = 15;
+
+                doc.setFontSize(9).setFont('helvetica', 'bold');
+                doc.text("Channel", startX + chartWidth / 2, startY - 2, { align: 'center' });
+                doc.addImage(channelImg, 'JPEG', startX, startY, chartWidth, chartHeight);
+                
+                const M = document.getElementById('numChannels').value;
+                doc.text(`Prob vs Th (M=${M})`, startX + chartWidth + paddingX + chartWidth / 2, startY - 2, { align: 'center' });
+                doc.addImage(outageImg, 'JPEG', startX + chartWidth + paddingX, startY, chartWidth, chartHeight);
+                
+                const secondRowY = startY + chartHeight + paddingY;
+                doc.text("LCR vs Th", startX + chartWidth / 2, secondRowY - 2, { align: 'center' });
+                doc.addImage(lcrImg, 'JPEG', startX, secondRowY, chartWidth, chartHeight);
+
+                doc.text("ADF vs Th", startX + chartWidth + paddingX + chartWidth / 2, secondRowY - 2, { align: 'center' });
+                doc.addImage(adfImg, 'JPEG', startX + chartWidth + paddingX, secondRowY, chartWidth, chartHeight);
+                doc.setFont('helvetica', 'normal');
+
+                // Get User Entered Values (handling empty strings)
+                const getVal = (id) => document.getElementById(id).value || '0.0';
+
+                const scLcrUser = getVal('scLcrExpInput');
+                const scThUser = getVal('scLcrThInput');
+                const scAdfExpUser = getVal('scAdfExpInput');
+                const scAdfThUser = getVal('scAdfThInput');
+
+                const mrcLcrUser = getVal('mrcLcrExpInput');
+                const mrcThUser = getVal('mrcLcrThInput');
+                const mrcAdfExpUser = getVal('mrcAdfExpInput');
+                const mrcAdfThUser = getVal('mrcAdfThInput');
+
+                const inputData = [
+                    ['No. of Multipaths', document.getElementById('numMultipaths').value],
+                    ['No. of Samples', document.getElementById('numSamples').value],
+                    ['Sampling Time (sec)', document.getElementById('samplingTime').value],
+                    ['fc (Hz)', (parseFloat(document.getElementById('carrierFreq').value) * 1e6).toExponential(1)],
+                    ['Velocity (mps)', document.getElementById('velocity').value],
+                    ['Threshold (dB)', document.getElementById('threshold').value],
+                    ['No. of Branches', document.getElementById('numChannels').value],
+                    ['Avg SNR (dB)', document.getElementById('avgSNR').value]
+                ];
+
+                const resultsData = [
+                    ['SC(Actual)', document.getElementById('scLcrExp').textContent, document.getElementById('scLcrTh').textContent, document.getElementById('scAdfExp').textContent, document.getElementById('scAdfTh').textContent],
+                    ['SC(Entered)', scLcrUser, scThUser, scAdfExpUser, scAdfThUser],
+                    ['MRC(Actual)', document.getElementById('mrcLcrExp').textContent, document.getElementById('mrcLcrTh').textContent, document.getElementById('mrcAdfExp').textContent, document.getElementById('mrcAdfTh').textContent],
+                    ['MRC(Entered)', mrcLcrUser, mrcThUser, mrcAdfExpUser, mrcAdfThUser]
+                ];
+
+                doc.autoTable({
+                    startY: secondRowY + chartHeight + 5,
+                    head: [['Input Parameters', '']],
+                    body: inputData,
+                    theme: 'grid',
+                    styles: { fontSize: 8, cellPadding: 1, halign: 'center' },
+                    headStyles: { fillColor: [100, 200, 100], textColor: 0, fontSize: 10, halign: 'center', fontStyle: 'bold' },
+                    columnStyles: { 0: { fontStyle: 'bold' } },
+                    alternateRowStyles: { fillColor: [255, 255, 255] }
+                });
+
+                doc.text("Results", 105, doc.lastAutoTable.finalY + 5, { align: 'center' });
+
+                doc.autoTable({
+                    startY: doc.lastAutoTable.finalY + 7,
+                    head: [['Type', 'LCR(Exp)', 'LCR(Th)', 'ADF(Exp)', 'ADF(Th)']],
+                    body: resultsData,
+                    theme: 'grid',
+                    styles: { fontSize: 8, cellPadding: 1, halign: 'center' },
+                    headStyles: { fillColor: [100, 200, 100], textColor: 0, fontSize: 9, halign: 'center', fontStyle: 'bold' },
+                    columnStyles: { 0: { fontStyle: 'bold' } },
+                    didParseCell: function(data) {
+                        if (data.row.raw[0].includes('(Entered)')) {
+                            data.cell.styles.fillColor = [255, 255, 0]; // Yellow
+                        }
+                    }
+                });
+
+                let finalY = doc.lastAutoTable.finalY + 15;
+                const pageHeight = doc.internal.pageSize.getHeight();
+                if (finalY > pageHeight - 15) {
+                    doc.addPage();
+                    finalY = 20; 
+                }
+                doc.text(`(Signature of ${userName.toUpperCase()})`, 15, finalY);
+                doc.text("(Signature of Faculty)", 160, finalY);
+
+                doc.save(`Report-${userName}.pdf`);
+            } catch (error) {
+                console.error("Failed to generate PDF:", error);
+                alert("Sorry, there was an error generating the PDF report. Please try again.");
+            } finally {
+                reportButton.textContent = 'REPORT';
+                reportButton.disabled = false;
+            }
+        });
+
+    </script>
+<script src="../assets/js/iframeResize.js"></script>
+        
+        </body>
+</html>

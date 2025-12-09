@@ -1,0 +1,116 @@
+  {
+	  "version": 2.0,
+  "questions": [
+    {
+    "question": "1. What is the key characteristic of 'flat fading'?",
+    "answers": {
+      "a": "It affects only the high-frequency parts of a signal.",
+      "b": "It affects only the low-frequency parts of a signal.",
+      "c": "It affects all frequency components of the signal in a similar way.",
+      "d": "It is a signal gain, not a loss."
+    },
+    "correctAnswer": "c",
+    "difficulty": "beginner"
+  },
+  {
+    "question": "2. What does 'outage probability' define?",
+    "answers": {
+      "a": "The probability that the system is powered down for maintenance.",
+      "b": "The probability that the received signal quality falls below a usable threshold.",
+      "c": "The likelihood that a user moves out of the cell's coverage area.",
+      "d": "The probability that a new call is successfully connected."
+    },
+    "correctAnswer": "b",
+    "difficulty": "beginner"
+  },
+  {
+    "question": "3. What does the 'Level Crossing Rate' (LCR) measure?",
+    "answers": {
+      "a": "How often the signal strength crosses a specific level.",
+      "b": "The average speed of the mobile user.",
+      "c": "The total number of users in a cell.",
+      "d": "The average time a signal stays in a faded state."
+    },
+    "correctAnswer": "a",
+    "difficulty": "medium"
+  },
+  {
+    "question": "4. What is the 'Average Fade Duration' (ADF)?",
+    "answers": {
+      "a": "The average time it takes to connect a call.",
+      "b": "The average time the signal stays below a specific level once it drops.",
+      "c": "The frequency at which the signal fades the most.",
+      "d": "The total duration of the entire communication."
+    },
+    "correctAnswer": "b",
+    "difficulty": "medium"
+  },
+  {
+    "question": "5. What does the diversity technique 'Selection Combining' (SC) do?",
+    "answers": {
+      "a": "It combines all received signals by adding them together.",
+      "b": "It averages the quality of all received signals.",
+      "c": "It discards all signals and waits for a better one.",
+      "d": "It selects the single best signal from multiple received paths."
+    },
+    "correctAnswer": "d",
+    "difficulty": "medium"
+  },
+  {
+    "question": "6. How does 'Maximal-Ratio Combining' (MRC) improve the signal?",
+    "answers": {
+      "a": "It selects only the signal with the lowest noise.",
+      "b": "It inverts the phase of bad signals to cancel them out.",
+      "c": "It intelligently combines all signals, giving more weight to the stronger ones.",
+      "d": "It only uses the two strongest signals and discards the rest."
+    },
+    "correctAnswer": "c",
+    "difficulty": "medium"
+  },
+  {
+    "question": "7. How does the performance of MRC generally compare to Selection Combining (SC) in a SISO system?",
+    "answers": {
+      "a": "MRC provides a better improvement in signal quality.",
+      "b": "SC provides a better improvement in signal quality.",
+      "c": "They both provide the exact same level of improvement.",
+      "d": "SC is better for LCR, but MRC is better for ADF."
+    },
+    "correctAnswer": "a",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "8. What is the primary goal of using diversity combining (SC or MRC) in a fading environment?",
+    "answers": {
+      "a": "To increase the Level Crossing Rate.",
+      "b": "To increase the Average Fade Duration.",
+      "c": "To decrease the outage probability.",
+      "d": "To make the fading 'flat'."
+    },
+    "correctAnswer": "c",
+    "difficulty": "medium"
+  },
+  {
+    "question": "9. A system is described as 'SISO'. What does this mean?",
+    "answers": {
+      "a": "It has multiple transmit and multiple receive antennas.",
+      "b": "It has multiple transmit and a single receive antenna.",
+      "c": "It has a single transmit and a single receive antenna.",
+      "d": "It has a single transmit and multiple receive antennas."
+    },
+    "correctAnswer": "c",
+    "difficulty": "beginner"
+  },
+  {
+    "question": "10. If a diversity scheme is working well, what change would you expect in the LCR and ADF?",
+    "answers": {
+      "a": "Both LCR and ADF would increase.",
+      "b": "LCR would increase, but ADF would decrease.",
+      "c": "Both LCR and ADF would decrease.",
+      "d": "LCR would decrease, but ADF would increase."
+    },
+    "correctAnswer": "c",
+    "difficulty": "advanced"
+  }
+
+  ]
+}

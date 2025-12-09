@@ -1,0 +1,117 @@
+
+  {
+	  "version": 2.0,
+  "questions": [
+    {
+    "question": "1. What is the primary disadvantage of a baseline SISO (Single-Input Single-Output) system in a flat fading channel?",
+    "answers": {
+      "a": "It has a very high Level Crossing Rate (LCR).",
+      "b": "It has a very long Average Fade Duration (ADF).",
+      "c": "It is highly susceptible to deep fades, leading to high outage probability.",
+      "d": "It cannot be used for high data rates."
+    },
+    "correctAnswer": "c",
+    "difficulty": "medium"
+  },
+  {
+    "question": "2. What do both Selection Combining (SC) and Maximal-Ratio Combining (MRC) require at the receiver to provide diversity gain?",
+    "answers": {
+      "a": "A single, very high-gain antenna.",
+      "b": "Multiple receive antennas or signal paths.",
+      "c": "A very fast signal processor.",
+      "d": "A perfect knowledge of the data being sent."
+    },
+    "correctAnswer": "b",
+    "difficulty": "beginner"
+  },
+  {
+    "question": "3. What is the primary implementation advantage of Selection Combining (SC) when compared to Maximal-Ratio Combining (MRC)?",
+    "answers": {
+      "a": "SC provides a higher signal-to-noise ratio.",
+      "b": "SC is much simpler, as it only needs to select one signal, not combine them.",
+      "c": "SC works better when the user is moving fast.",
+      "d": "SC completely eliminates all fading."
+    },
+    "correctAnswer": "b",
+    "difficulty": "medium"
+  },
+  {
+    "question": "4. How does Maximal-Ratio Combining (MRC) achieve the best possible performance?",
+    "answers": {
+      "a": "It selects the two strongest signals and averages them.",
+      "b": "It inverts the phase of weak signals to cancel them.",
+      "c": "It aligns the phases of all signals and sums them, weighted by their strength.",
+      "d": "It switches between antennas at a very high speed."
+    },
+    "correctAnswer": "c",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "5. If a mobile user increases their speed (e.g., from walking to driving), what is the most likely effect on the Level Crossing Rate (LCR)?",
+    "answers": {
+      "a": "The LCR will increase.",
+      "b": "The LCR will decrease.",
+      "c": "The LCR will not change.",
+      "d": "The LCR will become zero."
+    },
+    "correctAnswer": "a",
+    "difficulty": "medium"
+  },
+  {
+    "question": "6. If a mobile user increases their speed, what is the corresponding effect on the Average Fade Duration (ADF)?",
+    "answers": {
+      "a": "The ADF will increase.",
+      "b": "The ADF will decrease.",
+      "c": "The ADF will not change.",
+      "d": "The ADF will become infinitely long."
+    },
+    "correctAnswer": "b",
+    "difficulty": "medium"
+  },
+  {
+    "question": "7. If the system's acceptable signal quality threshold is *raised* (i.e., a better signal is required), what happens to the outage probability?",
+    "answers": {
+      "a": "The outage probability decreases.",
+      "b": "The outage probability stays the same.",
+      "c": "The outage probability increases.",
+      "d": "The outage probability depends only on the LCR."
+    },
+    "correctAnswer": "c",
+    "difficulty": "medium"
+  },
+  {
+    "question": "8. How does receiver diversity (like SC or MRC) fundamentally reduce outage probability?",
+    "answers": {
+      "a": "It increases the total transmitted power from the base station.",
+      "b": "It makes the signal travel a shorter distance.",
+      "c": "It relies on the low probability that all receive paths are in a deep fade at the same time.",
+      "d": "It changes the flat fading into frequency-selective fading."
+    },
+    "correctAnswer": "c",
+    "difficulty": "advanced"
+  },
+  {
+    "question": "9. When comparing SC and MRC with the same number of receiver antennas, which statement is true regarding performance?",
+    "answers": {
+      "a": "SC always has a lower outage probability than MRC.",
+      "b": "MRC always has a lower outage probability than SC.",
+      "c": "SC and MRC always have the identical outage probability.",
+      "d": "SC is better for LCR, while MRC is better for ADF."
+    },
+    "correctAnswer": "b",
+    "difficulty": "medium"
+  },
+  {
+    "question": "10. Compared to a single-antenna (SISO) system, what is the general effect of using either SC or MRC on the Average Fade Duration (ADF)?",
+    "answers": {
+      "a": "ADF increases.",
+      "b": "ADF decreases.",
+      "c": "ADF is not affected by diversity.",
+      "d": "ADF becomes equal to the LCR."
+    },
+    "correctAnswer": "b",
+    "difficulty": "advanced"
+  }
+
+  ]
+}
