@@ -26,36 +26,18 @@ Follow the instructions given below to perform the experiments:-
     <img src="images/instruction4.png" alt="Large Scale Fading">  
       </div>
 
-* Step4:- Enter value of LCR Exp and ADF Exp in both MRC and SC from the waveform.Then Click on "SUBMIT" Button.
-
+* Step5:- Click on the "Report" button.
+  
    <div align="center">
     <img src="images/instruction5.png" alt="Large Scale Fading">  
       </div>
 
-* Step5:- Click on the "Report" button.
+* Step6:- PDF report of the experiment is generated.
 
    <div align="center">
     <img src="images/instruction6.png" alt="Large Scale Fading">  
       </div>
 
-* Step6:- PDF report of the experiment is generated.
-
-    <div align="center">
-    <img src="images/instruction7.png" alt="Large Scale Fading">  
-      </div>
-
-* Step7:-After generation of the Report you will get following message.
-
-    <div align="center">
-    <img src="images/instruction8.png" alt="Large Scale Fading">  
-      </div>
-
-* Step8:- Click on the "Ok" and you will get your Report.
-
-    <div align="center">
-    <img src="images/instruction9.png" alt="Large Scale Fading">  
-      </div>
-
-* Step9:- To Redo the experiment click on "RESET" button.
+* Step7:- To Redo the experiment click on "RESET" button.
 
  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>   
